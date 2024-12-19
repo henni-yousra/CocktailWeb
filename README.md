@@ -2,7 +2,7 @@
 
 ## Setup
 
-### Backend Setup
+### project Setup
 
 1. **Clone the repository**:
    ```bash
