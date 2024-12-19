@@ -11,6 +11,19 @@
 
 ### Install dependencies
    ```bash
-    $ npm install
+cd frontend
+$ npm install
 
+npm run dev 
 
+```
+
+backend on http://localhost:5000
+
+   ```bash
+cd frontend
+npm install
+
+npm start
+   ```
+frontend on http://localhost:3000
