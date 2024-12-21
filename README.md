@@ -11,19 +11,5 @@
 
 ### Install dependencies
    ```bash
-cd frontend
-$ npm install
-
-npm run dev 
-
-```
-
-backend on http://localhost:5000
-
-   ```bash
-cd frontend
-npm install
-
-npm start
-   ```
-frontend on http://localhost:3000
+cd CocktailWeb
+$ docker-compose -f docker-compose.dev.yml up --build

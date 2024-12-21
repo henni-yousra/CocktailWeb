@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "build": "esbuild ./src/index.js --bundle --minify --platform=node --outfile=./dist/app.bundle.min.cjs",
-    "start": "node ./dist/app.bundle.min.cjs",
+    
     "dev": "nodemon ./src/index.js"
   },
   "dependencies": {
