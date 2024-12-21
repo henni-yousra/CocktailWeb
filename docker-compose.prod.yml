@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod 
+    ports:
+      - "4000:4000" 
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html  # à verifier si le build React est dans ./frontend/build
+
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod 
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+      - MONGO_DB=cocktaildb
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mongodb
+      - redis
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest 
+    environment:
+      - MONGO_INITDB_DATABASE=cocktaildb
+    volumes:
+      - mongodb_data_prod:/data/db
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf 
+      - redis_data_prod:/data
+
+  reverseproxy: 
+    restart: always
+    volumes:
+      - ./reverseproxy/nginx.prod.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80 
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  mongodb_data_prod:
+  redis_data_prod:   
