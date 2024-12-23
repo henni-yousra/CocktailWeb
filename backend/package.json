@@ -2,8 +2,8 @@
   "type": "module",
   "scripts": {
     "build": "esbuild ./src/index.js --bundle --minify --platform=node --outfile=./dist/app.bundle.min.cjs",
-    
-    "dev": "nodemon ./src/index.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
