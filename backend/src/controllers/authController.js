@@ -25,4 +25,33 @@ const signup = async (req, res) => {
 };
 
 
-export { signup };
+
+// Login route (new)
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if user exists
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid credentials' });
+  }
+
+  // Compare password with hashed password in DB
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return res.status(400).json({ message: 'Invalid credentials' });
+  }
+
+  // Generate JWT token
+  const token = jwt.sign(
+    { userId: user._id, email: user.email },
+    process.env.JWT_SECRET, // Ensure you have a JWT secret in your .env file
+    { expiresIn: '1h' }
+  );
+
+  res.status(200).json({ token });
+};
+
+
+
+export { signup, login};
