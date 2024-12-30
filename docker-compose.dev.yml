@@ -13,6 +13,8 @@ services:
       - /app/node_modules
     depends_on:
       - backend
+    networks:
+      - app_network
 
   backend:
     container_name: backend
@@ -20,7 +22,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - "5000:5000"
     environment:
       - MONGO_URI=mongodb://mongodb:27017/
       - MONGO_DB=cocktaildb
@@ -32,6 +34,8 @@ services:
     depends_on:
       - mongodb
       - redis
+    networks:
+      - app_network
 
   mongodb:
     container_name: mongodb
@@ -40,6 +44,8 @@ services:
       - MONGO_INITDB_DATABASE=cocktaildb
     volumes:
       - mongodb_data_dev:/data/db
+    networks:
+      - app_network
 
   redis:
     image: redis:7.4-alpine
@@ -47,6 +53,8 @@ services:
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
       - redis_data_dev:/data
+    networks:
+      - app_network
 
   reverseproxy:
     restart: always
@@ -60,7 +68,13 @@ services:
       - ./reverseproxy/nginx.dev.conf:/etc/nginx/nginx.conf
     ports:
       - 8080:80
+    networks:
+      - app_network
 
 volumes:
   mongodb_data_dev:
   redis_data_dev:
+
+networks:
+  app_network:
+    driver: bridge

@@ -2,60 +2,58 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/pages/Signup.css';
 
-function Signup() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
+const Signup = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas.');
-      return;
-    }
-
     try {
-      const response = await fetch('/api/signup', {
+      const response = await fetch('http://backend:5000/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ email, password }),
       });
+      
+      
+      
+
+      const data = await response.json();
       if (response.ok) {
         navigate('/login');
       } else {
-        const data = await response.json();
-        setError(data.message || 'Une erreur est survenue.');
+        setError(data.message || 'Signup failed');
       }
     } catch (err) {
-      setError('Impossible de se connecter au serveur.');
+      setError('An error occurred');
     }
   };
 
   return (
-    <div>
-      <h1>Inscription</h1>
+    <div className="signup">
+      <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="firstName" placeholder="Prénom" onChange={handleChange} required />
-        <input type="text" name="lastName" placeholder="Nom" onChange={handleChange} required />
-        <input type="email" name="email" placeholder="Email" onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Mot de passe" onChange={handleChange} required />
-        <input type="password" name="confirmPassword" placeholder="Confirmez le mot de passe" onChange={handleChange} required />
-        <button type="submit">S'inscrire</button>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        {error && <p className="error">{error}</p>}
+        <button type="submit">Signup</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
-}
+};
 
 export default Signup;
