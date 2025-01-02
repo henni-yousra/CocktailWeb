@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/pages/Signup.css';
 
 const Signup = () => {
@@ -11,7 +11,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/signup', {  // Use correct URL
+      const response = await fetch('http://localhost:5000/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,19 +19,18 @@ const Signup = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      // Check if the response is ok (status code 200-299)
       if (!response.ok) {
-        const errorData = await response.json();  // Assume JSON error message
+        const errorData = await response.json();
         setError(errorData.message || 'Signup failed');
-        console.error('Error response:', errorData);  // Log the error for debugging
+        console.error('Error response:', errorData);
         return;
       }
 
-      const data = await response.json();  // Now parse the JSON
-      navigate('/login');  // Redirect to login page on success
+      const data = await response.json();
+      navigate('/login');
     } catch (err) {
       setError('An error occurred');
-      console.error('Fetch error:', err);  // Log to the console for debugging
+      console.error('Fetch error:', err);
     }
   };
 
@@ -56,6 +55,7 @@ const Signup = () => {
         {error && <p className="error">{error}</p>}
         <button type="submit">Signup</button>
       </form>
+      <p>Already have an account? <Link to="/login">Login here</Link></p>
     </div>
   );
 };

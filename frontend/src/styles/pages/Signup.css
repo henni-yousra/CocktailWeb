@@ -52,7 +52,7 @@ body {
   /* Bouton de soumission */
   form button {
     padding: 0.8rem;
-    background-color: #28a745;
+    background-color: #a32f43;
     color: white;
     border: none;
     border-radius: 4px;
@@ -62,7 +62,7 @@ body {
   }
   
   form button:hover {
-    background-color: #218838;
+    background-color: #501818;
   }
   
   /* Message d'erreur */

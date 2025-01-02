@@ -12,10 +12,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: '*',  // Allow only the frontend to access the backend
+  origin: '*',  
 }));
 app.use(express.json());
-
 
 
 // Routes
