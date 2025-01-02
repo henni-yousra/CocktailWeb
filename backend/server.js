@@ -1,8 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors'; // Import CORS
 import auth from './src/routes/auth.js';
-import cors from 'cors';
 
 // Initialize dotenv configuration
 dotenv.config();
@@ -10,22 +10,19 @@ dotenv.config();
 // Create the Express app instance
 const app = express();
 
-// Enable CORS for all routes
-app.use(cors({
-  origin: '*', // Allow all origins
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-}));
-
 // Middleware
+app.use(cors({
+  origin: '*',  // Allow only the frontend to access the backend
+}));
 app.use(express.json());
 
+
+
 // Routes
-app.use('/api/auth', auth);
+app.use('/api/', auth);
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Error connecting to MongoDB:', err));
 

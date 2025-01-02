@@ -24,10 +24,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/
-      - MONGO_DB=cocktaildb
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - MONGO_URI=mongodb://mongodb:27017/cocktaildb
+      - JWT_SECRET=your_jwt_secret
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -57,13 +55,14 @@ services:
       - app_network
 
   reverseproxy:
+    container_name: reverseproxy
     restart: always
     build:
-      context: reverseproxy/
-      dockerfile: ./Dockerfile.dev
+      context: ./reverseproxy
+      dockerfile: Dockerfile.dev
     depends_on:
-      - backend
       - frontend
+      - backend
     volumes:
       - ./reverseproxy/nginx.dev.conf:/etc/nginx/nginx.conf
     ports:
@@ -77,3 +76,4 @@ volumes:
 
 networks:
   app_network:
+    driver: bridge

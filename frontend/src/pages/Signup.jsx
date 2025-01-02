@@ -11,23 +11,27 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8080/api/auth/signup', {
+      const response = await fetch('http://localhost:5000/api/auth/signup', {  // Use correct URL
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email, password }),
       });
-      
-      
-      
 
-      const data = await response.json();
-      if (response.ok) {
-        navigate('/login');
-      } else {
-        setError(data.message || 'Signup failed');
+      // Check if the response is ok (status code 200-299)
+      if (!response.ok) {
+        const errorData = await response.json();  // Assume JSON error message
+        setError(errorData.message || 'Signup failed');
+        console.error('Error response:', errorData);  // Log the error for debugging
+        return;
       }
+
+      const data = await response.json();  // Now parse the JSON
+      navigate('/login');  // Redirect to login page on success
     } catch (err) {
       setError('An error occurred');
+      console.error('Fetch error:', err);  // Log to the console for debugging
     }
   };
 
