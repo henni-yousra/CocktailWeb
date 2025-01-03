@@ -1,61 +1,81 @@
-/* Styles pour la page d'accueil */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  /* Conteneur principal de la page d'accueil */
-  .home-container {
-    background-color: #ffffff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-  
-  /* Titre de la page d'accueil */
-  .home-container h1 {
-    margin-bottom: 1rem;
-    color: #333333;
-    font-size: 2rem;
-  }
-  
-  /* Description sous le titre */
-  .home-container p {
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
-    color: #555555;
-  }
-  
-  /* Conteneur des liens */
-  .links {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  /* Style des liens */
-  .links .btn {
-    padding: 0.8rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 1rem;
-    text-align: center;
-    transition: background-color 0.3s ease;
-  }
-  
-  .links .btn:hover {
-    background-color: #0056b3;
-  }
-  
+/* Conteneur principal */
+.cocktail-search-container {
+  font-family: Arial, sans-serif;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Titre */
+.cocktail-search-container h1 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+/* Formulaire */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.search-form select,
+.search-form input,
+.search-form button {
+  padding: 0.8rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.search-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Message d'erreur */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* Résultats */
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.cocktail-card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cocktail-card img {
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+.cocktail-card h2 {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+.cocktail-card p {
+  color: #555;
+  font-size: 0.9rem;
+}

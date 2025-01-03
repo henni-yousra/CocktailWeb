@@ -4,15 +4,13 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
+      context: frontend/
+      dockerfile: ./Dockerfile.dev
     ports:
       - "4000:4000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    depends_on:
-      - backend
 
   backend:
     container_name: backend

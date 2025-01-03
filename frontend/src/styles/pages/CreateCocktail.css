@@ -1,0 +1,95 @@
+/* Conteneur principal */
+.create-cocktail-container {
+    font-family: 'Arial', sans-serif;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* Titre principal */
+  .create-cocktail-container h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Formulaire */
+  .create-cocktail-form input,
+  .create-cocktail-form textarea,
+  .create-cocktail-form button {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  
+  /* Ingrédients */
+  /*.ingredient-row {
+     display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .ingredient-row input {
+    flex: 1;
+  }
+  
+  .ingredient-row button {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .ingredient-row button:hover {
+    background-color: darkred;
+  }
+  
+  /* Ajouter un ingrédient */
+  .create-cocktail-form button[type="button"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .create-cocktail-form button[type="button"]:hover {
+    background-color: #0056b3;
+  } */
+  
+  /* Bouton de soumission */
+  .create-cocktail-form button[type="submit"] {
+    background-color: green;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .create-cocktail-form button[type="submit"]:hover {
+    background-color: darkgreen;
+  }
+  
+  /* Messages */
+  .success-message {
+    color: green;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+  
