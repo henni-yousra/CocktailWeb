@@ -1,0 +1,14 @@
+
+
+.home-footer {
+    text-align: center;
+    background-color: #fff;
+    padding: 1rem;
+    border-top: 1px solid #ccc;
+  }
+  
+  .home-footer p {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  

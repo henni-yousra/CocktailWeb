@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/pages/Home.css';
+import '../styles/GlobalStyle.css';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import SearchFilterBar from '../components/SearchFilterBar';
+import CocktailList from '../components/CocktailList';
+import CocktailModal from '../components/CocktailModal';
 
 function Home() {
   // Données initiales
@@ -51,6 +57,9 @@ function Home() {
   // État pour la modal (cocktail sélectionné)
   const [selectedCocktail, setSelectedCocktail] = useState(null);
 
+  // Etat pour les favoris
+  const [favorites, setFavorites] = useState([]);
+
   // Charger tous les cocktails au départ
   useEffect(() => {
     setFilteredCocktails(data); 
@@ -58,12 +67,10 @@ function Home() {
 
   // Fonction de filtrage globale
   const filterCocktails = (category, query) => {
-    // Filtrage initial : si category = "all", on part de tous, sinon on filtre
     let filtered = category === 'all'
-      ? [...data] // on prend la liste complète
+      ? [...data]
       : data.filter((cocktail) => cocktail.category === category);
 
-    // Filtrer par nom (si searchQuery n'est pas vide)
     if (query.trim()) {
       filtered = filtered.filter((cocktail) =>
         cocktail.name.toLowerCase().includes(query.toLowerCase())
@@ -78,7 +85,6 @@ function Home() {
     const newCategory = e.target.value;
     setSelectedCategory(newCategory);
 
-    // On recalcule la liste filtrée
     const newFiltered = filterCocktails(newCategory, searchQuery);
     setFilteredCocktails(newFiltered);
   };
@@ -88,7 +94,6 @@ function Home() {
     const newQuery = e.target.value;
     setSearchQuery(newQuery);
 
-    // On recalcule la liste filtrée
     const newFiltered = filterCocktails(selectedCategory, newQuery);
     setFilteredCocktails(newFiltered);
   };
@@ -103,17 +108,24 @@ function Home() {
     setSelectedCocktail(null);
   };
 
+  // Ajouter/retirer un cocktail des favoris
+  const handleToggleFavorite = (cocktail) => {
+    const isFavorite = favorites.some((fav) => fav.id === cocktail.id);
+    if (isFavorite) {
+      setFavorites((prev) => prev.filter((f) => f.id !== cocktail.id));
+    } else {
+      setFavorites((prev) => [...prev, cocktail]);
+    }
+  };
+
+  const isFavoriteCocktail = (cocktailId) => {
+    return favorites.some((fav) => fav.id === cocktailId);
+  };
+
+
   return (
     <div className="home-container">
-      {/* Navbar fixe (optionnelle) */}
-      <nav className="navbar">
-        <div className="navbar-brand">Cocktail</div>
-        {/* Ici, si tu veux un menu ou des liens */}
-        <ul className="navbar-links">
-          <a href='/'><li>Accueil</li></a>
-          <a href='/login'><li>Connexion</li></a>
-        </ul>
-      </nav>
+      <Navbar />
 
       {/* Contenu principal (scrollable) */}
       <div className="content">
@@ -122,79 +134,29 @@ function Home() {
         </header>
 
         {/* Barre de filtre + Barre de recherche */}
-        <section className="search-section">
-          <div className="filters">
-            <label htmlFor="category-select">Filtrer par catégorie :</label>
-            <select
-              id="category-select"
-              value={selectedCategory}
-              onChange={handleCategoryChange}
-            >
-              <option value="all">All</option>
-              <option value="cocktail">Cocktail</option>
-              {/* On pourra ajouter d'autres catégories plus tard */}
-            </select>
-          </div>
-
-          <div className="search-bar">
-            <label htmlFor="search-input">Rechercher par nom :</label>
-            <input
-              id="search-input"
-              type="text"
-              placeholder="Ex: Mojito..."
-              value={searchQuery}
-              onChange={handleSearchQueryChange}
-            />
-          </div>
-        </section>
+        <SearchFilterBar
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+          searchQuery={searchQuery}
+          onSearchQueryChange={handleSearchQueryChange}
+        />
 
         {/* Liste des cocktails filtrés */}
-        <section className="results-section">
-          <div className="results">
-            {filteredCocktails && filteredCocktails.length > 0 ? (
-              filteredCocktails.map((cocktail) => (
-                <div
-                  key={cocktail.id}
-                  className="cocktail-card"
-                  onClick={() => handleCardClick(cocktail)}
-                >
-                  <img src={cocktail.image} alt={cocktail.name} />
-                  <h2>{cocktail.name}</h2>
-                  <p>{cocktail.category}</p>
-                </div>
-              ))
-            ) : (
-              <p>Aucun cocktail à afficher.</p>
-            )}
-          </div>
-        </section>
+        <CocktailList
+          cocktails={filteredCocktails}
+          onCardClick={handleCardClick}
+          onToggleFavorite={handleToggleFavorite}
+          isFavoriteCocktail={isFavoriteCocktail}
+        />
       </div>
 
-      {/* Footer */}
-      <footer className="home-footer">
-        <p>&copy; 2025 Cocktail. Tous droits réservés.</p>
-      </footer>
+      <Footer />
 
       {/* Modal pour afficher les détails du cocktail */}
-      {selectedCocktail && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeModal}>
-              &times;
-            </button>
-            <img src={selectedCocktail.image} alt={selectedCocktail.name} />
-            <h2>{selectedCocktail.name}</h2>
-            <p>
-              <strong>Catégorie : </strong>
-              {selectedCocktail.category}
-            </p>
-            <p>
-              <strong>Instructions : </strong>
-              {selectedCocktail.instructions}
-            </p>
-          </div>
-        </div>
-      )}
+      <CocktailModal 
+        selectedCocktail={selectedCocktail}
+        onClose={closeModal}
+      />
     </div>
   );
 }

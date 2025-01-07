@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/pages/Login.css';
+import '../styles/GlobalStyle.css';
+
 
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -23,7 +25,7 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token); // Stocker le token
-        navigate('/account');
+        //navigate('/account');
       } else {
         const data = await response.json();
         setError(data.message || 'Échec de la connexion.');
@@ -42,7 +44,10 @@ function Login() {
         <button type="submit">Se connecter</button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
+      <p> Pas de compte? <a href='/signup'>Inscrivez-vous</a></p>
+
     </div>
+    
   );
 }
 
