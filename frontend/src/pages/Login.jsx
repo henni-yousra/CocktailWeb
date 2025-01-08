@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/pages/Login.css';
+import '../styles/GlobalStyle.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -21,22 +22,22 @@ const Login = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(errorData.message || 'Login failed');
-        console.error('Error response:', errorData);
+        setError(errorData.message || 'Échec de la connexion');
+        console.error('Erreur de réponse:', errorData);
         return;
       }
 
       const data = await response.json();
       navigate('/dashboard');
     } catch (err) {
-      setError('An error occurred');
-      console.error('Fetch error:', err);
+      setError('Une erreur est survenue');
+      console.error('Erreur de fetch:', err);
     }
   };
 
   return (
     <div className="login">
-      <h2>Login</h2>
+      <h2>Connexion</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -47,15 +48,15 @@ const Login = () => {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         {error && <p className="error">{error}</p>}
-        <button type="submit">Login</button>
+        <button type="submit">Connexion</button>
       </form>
-      <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+      <p>Vous n'avez pas de compte? <Link to="/signup">Inscrivez-vous</Link></p>
     </div>
   );
 };

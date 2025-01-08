@@ -21,22 +21,22 @@ const Signup = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(errorData.message || 'Signup failed');
-        console.error('Error response:', errorData);
+        setError(errorData.message || 'Échec de l\'inscription');
+        console.error('Erreur de réponse:', errorData);
         return;
       }
 
       const data = await response.json();
       navigate('/login');
     } catch (err) {
-      setError('An error occurred');
-      console.error('Fetch error:', err);
+      setError('Une erreur est survenue');
+      console.error('Erreur de fetch:', err);
     }
   };
 
   return (
     <div className="signup">
-      <h2>Signup</h2>
+      <h2>Inscription</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -47,15 +47,15 @@ const Signup = () => {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         {error && <p className="error">{error}</p>}
-        <button type="submit">Signup</button>
+        <button type="submit">S'inscrire</button>
       </form>
-      <p>Already have an account? <Link to="/login">Login here</Link></p>
+      <p>Vous avez déjà un compte? <Link to="/login">Connectez-vous ici</Link></p>
     </div>
   );
 };

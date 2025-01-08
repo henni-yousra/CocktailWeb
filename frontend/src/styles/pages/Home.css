@@ -1,62 +1,27 @@
-/* Styles pour la page d'accueil */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  /* Conteneur principal de la page d'accueil */
-  .home-container {
+/* RESET BASIQUE */
+/* /* src/pages/Home.css */
 
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
-  
-  /* Titre de la page d'accueil */
-  .home-container h1 {
-    margin-bottom: 1rem;
-    color: #ffffff;
-    font-size: 2rem;
-  }
-  
-  /* Description sous le titre */
-  .home-container p {
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
-    color: grey;
-  }
-  
-  /* Conteneur des liens */
-  .links {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  /* Style des liens */
-  .links .btn {
-    padding: 0.8rem;
-    background-color: #a32f43;
-    color: white;
-    font-weight: bolder;
-    border: none;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 1rem;
-    text-align: center;
-    transition: background-color 0.3s ease;
-  }
-  
-  .links .btn:hover {
-    background-color: #501818;
-  }
-  
+/* CONTENEUR GLOBAL */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* CONTENU PRINCIPAL */
+.content {
+  flex: 1;
+  margin-top: 80px; /* Ajuster selon la hauteur de la navbar */
+  padding: 2rem;
+  overflow-y: auto; /* scrollable si le contenu est trop grand */
+}
+
+/* HEADER */
+.home-header {
+  margin-bottom: 1.5rem;
+}
+.home-header h1 {
+  font-size: 2rem;
+  color: #333;
+}

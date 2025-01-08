@@ -7,12 +7,8 @@ const Dashboard = () => {
     <div className="dashboard">
       {/* Top Navigation Bar */}
       <nav className="navbar">
-        <h2>CocktailWeb</h2>
-        <ul>
-          <li><Link to="/search">Search Cocktails</Link></li>
-          <li><Link to="/favorites">Favorites</Link></li>
-          <li><Link to="/customize">Customize Recipes</Link></li>
-        </ul>
+        <h2> </h2>
+
         <Link to="/login" className="logout-button">Logout</Link>
       </nav>
 
