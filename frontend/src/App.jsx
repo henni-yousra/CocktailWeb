@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import './styles/App.css'
 import Dashboard from './pages/Dashboard';
 import CreateCocktail from './pages/CreateCocktail';
+import CocktailSearch from './pages/CocktailSearch';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<CreateCocktail />} />
-
+        <Route path="/search" element={<CocktailSearch />} />
       </Routes>
     </Router>
   );

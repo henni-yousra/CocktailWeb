@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import cors from 'cors'; // Import CORS
 import auth from './src/routes/auth.js';
 
+import cocktailsRouter from './src/routes/cocktails.js';
+
 // Initialize dotenv configuration
 dotenv.config();
 
@@ -19,6 +21,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/', auth);
+app.use('/api/cocktails', cocktailsRouter);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
