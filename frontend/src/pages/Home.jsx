@@ -15,6 +15,13 @@ function Home() {
       name: 'Mojito',
       category: 'cocktail',
       image: 'https://www.thecocktaildb.com/images/media/drink/3z6xdi1589574603.jpg',
+      ingredients: [
+        { name: 'Rhum', quantity: '4.5 cl' },
+        { name: 'Jus de citron vert', quantity: '3 cl' },
+        { name: 'Sucre', quantity: '2 cl' },
+        { name: 'Menthe', quantity: '6 feuilles' },
+        { name: 'Eau gazeuse', quantity: 'à volonté' },
+      ],
       instructions:
         'Mélanger le rhum, le jus de citron vert, le sucre et la menthe. Ajouter de la glace et compléter avec de l’eau gazeuse.',
     },
@@ -23,25 +30,30 @@ function Home() {
       name: 'Margarita',
       category: 'cocktail',
       image: 'https://www.thecocktaildb.com/images/media/drink/5noda61589575158.jpg',
+      ingredients: [
+        { name: 'Tequila', quantity: '3.5 cl' },
+        { name: 'Triple sec', quantity: '2 cl' },
+        { name: 'Jus de citron vert', quantity: '1.5 cl' },
+      ],
       instructions:
         'Secouer la tequila, le triple sec et le jus de citron vert dans un shaker avec de la glace. Servir dans un verre givré au sel.',
     },
-    {
-      id: 3,
-      name: 'Martini',
-      category: 'cocktail',
-      image: 'https://www.thecocktaildb.com/images/media/drink/71t8581504353095.jpg',
-      instructions:
-        'Mélanger le gin et le vermouth dans un verre à mélange avec des glaçons, puis verser dans un verre à Martini.',
-    },
-    {
-      id: 4,
-      name: 'Gin Tonic',
-      category: 'cocktail',
-      image: 'https://www.thecocktaildb.com/images/media/drink/z0omyp1582480573.jpg',
-      instructions:
-        'Verser le gin sur des glaçons, compléter avec du tonic, et ajouter une rondelle de citron.',
-    },
+    // {
+    //   id: 3,
+    //   name: 'Martini',
+    //   category: 'apperitif',
+    //   image: 'https://www.thecocktaildb.com/images/media/drink/71t8581504353095.jpg',
+    //   instructions:
+    //     'Mélanger le gin et le vermouth dans un verre à mélange avec des glaçons, puis verser dans un verre à Martini.',
+    // },
+    // {
+    //   id: 4,
+    //   name: 'Gin Tonic',
+    //   category: 'cocktail',
+    //   image: 'https://www.thecocktaildb.com/images/media/drink/z0omyp1582480573.jpg',
+    //   instructions:
+    //     'Verser le gin sur des glaçons, compléter avec du tonic, et ajouter une rondelle de citron.',
+    // },
     // Ajoutez autant de cocktails que vous le souhaitez
   ];
 
@@ -67,18 +79,29 @@ function Home() {
 
   // Fonction de filtrage globale
   const filterCocktails = (category, query) => {
-    let filtered = category === 'all'
-      ? [...data]
-      : data.filter((cocktail) => cocktail.category === category);
-
+    let filtered;
+  
+    if (category === 'favorites') {
+      // Si la catégorie est "favorites", on filtre directement dans l'état "favorites"
+      filtered = [...favorites]; 
+    } else if (category === 'all') {
+      // Toutes les données
+      filtered = [...data];
+    } else {
+      // Filtrer par catégorie
+      filtered = data.filter((cocktail) => cocktail.category === category);
+    }
+  
+    // Ensuite, on applique la recherche par nom si besoin
     if (query.trim()) {
       filtered = filtered.filter((cocktail) =>
         cocktail.name.toLowerCase().includes(query.toLowerCase())
       );
     }
-
+  
     return filtered;
   };
+  
 
   // Quand on change la catégorie
   const handleCategoryChange = (e) => {

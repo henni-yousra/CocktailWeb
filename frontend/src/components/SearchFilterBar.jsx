@@ -18,6 +18,7 @@ function SearchFilterBar({
         >
           <option value="all">All</option>
           <option value="cocktail">Cocktail</option>
+          <option value="favorites">favorites</option>
           {/* On pourra ajouter d'autres catégories plus tard */}
         </select>
       </div>

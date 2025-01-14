@@ -5,6 +5,8 @@ function CreateCocktail() {
   const [formData, setFormData] = useState({
     name: '',
     category: '',
+    isAlcoholic: 'alcoholic', 
+    alcoholType: '',
     ingredients: [{ name: '', quantity: '' }],
     instructions: '',
   });
@@ -46,8 +48,13 @@ function CreateCocktail() {
       return;
     }
 
+    if (formData.isAlcoholic === 'alcoholic' && !formData.alcoholType) {
+      setErrorMessage('Veuillez sélectionner un type d’alcool.');
+      return;
+    }
+
     try {
-      const response = await fetch('/api/cocktails', {
+      const response = await fetch('localhost:3000:/api/cocktails', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -58,6 +65,8 @@ function CreateCocktail() {
         setFormData({
           name: '',
           category: '',
+          isAlcoholic: 'alcoholic',
+          alcoholType: '',
           ingredients: [{ name: '', quantity: '' }],
           instructions: '',
         });
@@ -81,13 +90,57 @@ function CreateCocktail() {
           onChange={handleChange}
           required
         />
-        <input
-          type="text"
-          name="category"
-          placeholder="Catégorie (ex : Classique, Exotique)"
-          value={formData.category}
-          onChange={handleChange}
-        />
+        {/* <div>
+          <label>Catégorie :
+            <select
+              value={formData.category}
+              onChange={handleChange}
+              name="category"
+              required
+            >
+            <option value="">-- Sélectionnez une catégorie --</option>
+              <option value="classique">classique</option>
+              <option value="tropical">tropical</option>
+            </select>
+          </label>
+        </div> */}
+       
+
+        <div>
+          <label>
+            Type de cocktail :
+            <select
+              name="isAlcoholic"
+              value={formData.isAlcoholic}
+              onChange={handleChange}
+              required
+            >
+              <option value="alcoholic">Alcoolisé</option>
+              <option value="non-alcoholic">Sans alcool</option>
+            </select>
+          </label>
+        </div>
+
+        {/* Champ conditionnel pour sélectionner l'alcool */}
+        {formData.isAlcoholic === 'alcoholic' && (
+          <div>
+            <label>
+              Type d’alcool :
+              <select
+                name="alcoholType"
+                value={formData.alcoholType}
+                onChange={handleChange}
+                required
+              >
+                <option value="">-- Sélectionnez un type d’alcool --</option>
+                <option value="gin">Gin</option>
+                <option value="vodka">Vodka</option>
+                <option value="rhum">Rhum</option>
+                <option value="other">Autre</option>
+              </select>
+            </label>
+          </div>
+        )}
 
         <h2>Ingrédients</h2>
         {formData.ingredients.map((ingredient, index) => (
@@ -130,6 +183,7 @@ function CreateCocktail() {
 
       {successMessage && <p className="success-message">{successMessage}</p>}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      <a href="/">Retour à l'accueil</a>
     </div>
   );
 }

@@ -26,6 +26,12 @@ function CocktailModal({ selectedCocktail, onClose }) {
           {selectedCocktail.category}
         </p>
         <p>
+          <strong>ingredients : </strong>
+          {selectedCocktail.ingredients.map((ingredient) => 
+            <span key={ingredient.name}>{ingredient.name} {ingredient.quantity}, </span>
+          )}
+        </p>
+        <p>
           <strong>Instructions : </strong>
           {selectedCocktail.instructions}
         </p>

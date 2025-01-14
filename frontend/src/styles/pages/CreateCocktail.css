@@ -1,95 +1,114 @@
 /* Conteneur principal */
 .create-cocktail-container {
-    font-family: 'Arial', sans-serif;
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  /* Titre principal */
-  .create-cocktail-container h1 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Formulaire */
-  .create-cocktail-form input,
-  .create-cocktail-form textarea,
-  .create-cocktail-form button {
-    width: 100%;
-    margin-bottom: 1rem;
-    padding: 0.8rem;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-  }
-  
-  /* Ingrédients */
-  /*.ingredient-row {
-     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .ingredient-row input {
-    flex: 1;
-  }
-  
-  .ingredient-row button {
-    flex-shrink: 0;
-    padding: 0.5rem 1rem;
-    background-color: red;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .ingredient-row button:hover {
-    background-color: darkred;
-  }
-  
-  /* Ajouter un ingrédient */
-  .create-cocktail-form button[type="button"] {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .create-cocktail-form button[type="button"]:hover {
-    background-color: #0056b3;
-  } */
-  
-  /* Bouton de soumission */
-  .create-cocktail-form button[type="submit"] {
-    background-color: green;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .create-cocktail-form button[type="submit"]:hover {
-    background-color: darkgreen;
-  }
-  
-  /* Messages */
-  .success-message {
-    color: green;
-    font-size: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 1rem;
-    margin-top: 1rem;
-  }
-  
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.create-cocktail-container h1 {
+  text-align: center;
+  color: #333;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+}
+
+/* Formulaire */
+.create-cocktail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.create-cocktail-form input,
+.create-cocktail-form select,
+.create-cocktail-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.create-cocktail-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.create-cocktail-form button[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.create-cocktail-form button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+/* Ingrédients */
+.ingredient-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ingredient-row input {
+  flex: 1;
+}
+
+.ingredient-row button {
+  background-color: #f44336;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.ingredient-row button:hover {
+  background-color: #d32f2f;
+}
+
+/* Bouton Ajouter un ingrédient */
+.create-cocktail-form button[type="button"] {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.create-cocktail-form button[type="button"]:hover {
+  background-color: #0056b3;
+}
+
+/* Messages de succès et d'erreur */
+.success-message {
+  color: #4caf50;
+  background-color: #e8f5e9;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #f44336;
+  background-color: #ffebee;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+}
