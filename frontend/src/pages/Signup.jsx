@@ -1,42 +1,30 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import '../styles/pages/Signup.css';
+import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "../styles/pages/Signup.css";
 
 const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || 'Échec de l\'inscription');
-        console.error('Erreur de réponse:', errorData);
-        return;
-      }
+    const response = await signup(email, password);
 
-      const data = await response.json();
-      navigate('/login');
-    } catch (err) {
-      setError('Une erreur est survenue');
-      console.error('Erreur de fetch:', err);
+    if (response.success) {
+      navigate("/login");
+    } else {
+      setError(response.message);
     }
   };
 
   return (
-    <div className="signup">
-      <h2>Inscription</h2>
+    <div className="auth-container">
+      <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -47,15 +35,14 @@ const Signup = () => {
         />
         <input
           type="password"
-          placeholder="Mot de passe"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         {error && <p className="error">{error}</p>}
-        <button type="submit">S'inscrire</button>
+        <button type="submit">Signup</button>
       </form>
-      <p>Vous avez déjà un compte? <Link to="/login">Connectez-vous ici</Link></p>
     </div>
   );
 };

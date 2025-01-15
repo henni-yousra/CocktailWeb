@@ -1,37 +1,30 @@
-import React from 'react';
-import '../styles/components/CocktailModal.css';
+import React from "react";
+import "../styles/components/CocktailModal.css";
 
-function CocktailModal({ selectedCocktail, onClose }) {
-  // Si pas de cocktail, ne rien afficher
-  if (!selectedCocktail) return null;
-
-  const handleOverlayClick = () => {
-    onClose();
-  };
-
-  const handleContentClick = (e) => {
-    e.stopPropagation(); // Empêche la fermeture en cliquant dans la modal
-  };
+const CocktailModal = ({ cocktail, onClose }) => {
+  if (!cocktail) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className="modal-content" onClick={handleContentClick}>
-        <button className="modal-close" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-button" onClick={onClose}>
           &times;
         </button>
-        <img src={selectedCocktail.image} alt={selectedCocktail.name} />
-        <h2>{selectedCocktail.name}</h2>
-        <p>
-          <strong>Catégorie : </strong>
-          {selectedCocktail.category}
-        </p>
-        <p>
-          <strong>Instructions : </strong>
-          {selectedCocktail.instructions}
-        </p>
+        <h2>{cocktail.strDrink}</h2>
+        <img src={cocktail.strDrinkThumb} alt={cocktail.strDrink} />
+        <p><strong>Category:</strong> {cocktail.strCategory}</p>
+        <p><strong>Ingredients:</strong></p>
+        <ul>
+          {Object.keys(cocktail)
+            .filter((key) => key.startsWith("strIngredient") && cocktail[key])
+            .map((key) => (
+              <li key={key}>{cocktail[key]}</li>
+            ))}
+        </ul>
+        <p>{cocktail.strInstructions}</p>
       </div>
     </div>
   );
-}
+};
 
 export default CocktailModal;

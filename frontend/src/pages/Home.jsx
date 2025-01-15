@@ -1,164 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/pages/Home.css';
-import '../styles/GlobalStyle.css';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import SearchFilterBar from '../components/SearchFilterBar';
-import CocktailList from '../components/CocktailList';
-import CocktailModal from '../components/CocktailModal';
+import React, { useState, useEffect } from "react";
+import SearchBar from "../components/SearchBar";
+import CocktailCard from "../components/CocktailCard";
+import CocktailModal from "../components/CocktailModal";
+import "../styles/pages/Home.css";
 
-function Home() {
-  // Données initiales
-  const data = [
-    {
-      id: 1,
-      name: 'Mojito',
-      category: 'cocktail',
-      image: 'https://www.thecocktaildb.com/images/media/drink/3z6xdi1589574603.jpg',
-      instructions:
-        'Mélanger le rhum, le jus de citron vert, le sucre et la menthe. Ajouter de la glace et compléter avec de l’eau gazeuse.',
-    },
-    {
-      id: 2,
-      name: 'Margarita',
-      category: 'cocktail',
-      image: 'https://www.thecocktaildb.com/images/media/drink/5noda61589575158.jpg',
-      instructions:
-        'Secouer la tequila, le triple sec et le jus de citron vert dans un shaker avec de la glace. Servir dans un verre givré au sel.',
-    },
-    {
-      id: 3,
-      name: 'Martini',
-      category: 'cocktail',
-      image: 'https://www.thecocktaildb.com/images/media/drink/71t8581504353095.jpg',
-      instructions:
-        'Mélanger le gin et le vermouth dans un verre à mélange avec des glaçons, puis verser dans un verre à Martini.',
-    },
-    {
-      id: 4,
-      name: 'Gin Tonic',
-      category: 'cocktail',
-      image: 'https://www.thecocktaildb.com/images/media/drink/z0omyp1582480573.jpg',
-      instructions:
-        'Verser le gin sur des glaçons, compléter avec du tonic, et ajouter une rondelle de citron.',
-    },
-    // Ajoutez autant de cocktails que vous le souhaitez
-  ];
-
-  // État pour la liste de cocktails filtrés (affichés)
-  const [filteredCocktails, setFilteredCocktails] = useState([]);
-  
-  // État pour la recherche par nom
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // État pour la catégorie sélectionnée : "all" ou "cocktail"
-  const [selectedCategory, setSelectedCategory] = useState('all');
-
-  // État pour la modal (cocktail sélectionné)
+const Home = () => {
+  const [cocktails, setCocktails] = useState([]);
   const [selectedCocktail, setSelectedCocktail] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false); // Nouvel état pour suivre la recherche
 
-  // Etat pour les favoris
-  const [favorites, setFavorites] = useState([]);
-
-  // Charger tous les cocktails au départ
+  // Fetch random cocktails on page load
   useEffect(() => {
-    setFilteredCocktails(data); 
-  }, []);
+    if (!isSearching) {
+      fetchCocktailsOfTheMoment();
+    }
+  }, [isSearching]);
 
-  // Fonction de filtrage globale
-  const filterCocktails = (category, query) => {
-    let filtered = category === 'all'
-      ? [...data]
-      : data.filter((cocktail) => cocktail.category === category);
-
-    if (query.trim()) {
-      filtered = filtered.filter((cocktail) =>
-        cocktail.name.toLowerCase().includes(query.toLowerCase())
+  const fetchCocktailsOfTheMoment = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "https://www.thecocktaildb.com/api/json/v1/1/random.php"
       );
-    }
+      const data = await response.json();
 
-    return filtered;
-  };
+      const additionalCocktails = await Promise.all(
+        Array.from({ length: 5 }).map(() =>
+          fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
+            .then((res) => res.json())
+            .then((resData) => resData.drinks[0])
+        )
+      );
 
-  // Quand on change la catégorie
-  const handleCategoryChange = (e) => {
-    const newCategory = e.target.value;
-    setSelectedCategory(newCategory);
-
-    const newFiltered = filterCocktails(newCategory, searchQuery);
-    setFilteredCocktails(newFiltered);
-  };
-
-  // Quand on tape dans la barre de recherche
-  const handleSearchQueryChange = (e) => {
-    const newQuery = e.target.value;
-    setSearchQuery(newQuery);
-
-    const newFiltered = filterCocktails(selectedCategory, newQuery);
-    setFilteredCocktails(newFiltered);
-  };
-
-  // Ouverture de la modal au clic sur une carte
-  const handleCardClick = (cocktail) => {
-    setSelectedCocktail(cocktail);
-  };
-
-  // Fermeture de la modal
-  const closeModal = () => {
-    setSelectedCocktail(null);
-  };
-
-  // Ajouter/retirer un cocktail des favoris
-  const handleToggleFavorite = (cocktail) => {
-    const isFavorite = favorites.some((fav) => fav.id === cocktail.id);
-    if (isFavorite) {
-      setFavorites((prev) => prev.filter((f) => f.id !== cocktail.id));
-    } else {
-      setFavorites((prev) => [...prev, cocktail]);
+      setCocktails([data.drinks[0], ...additionalCocktails]);
+    } catch (error) {
+      console.error("Error fetching cocktails of the moment:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const isFavoriteCocktail = (cocktailId) => {
-    return favorites.some((fav) => fav.id === cocktailId);
+  const handleSearch = async (query) => {
+    try {
+      setLoading(true);
+      setIsSearching(true);
+      const response = await fetch(
+        `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${query}`
+      );
+      const data = await response.json();
+      setCocktails(data.drinks || []);
+    } catch (error) {
+      console.error("Error searching for cocktails:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const handleReset = () => {
+    setIsSearching(false);
+  };
 
   return (
-    <div className="home-container">
-      <Navbar />
-
-      {/* Contenu principal (scrollable) */}
-      <div className="content">
-        <header className="home-header">
-          <h1>Trouvez le cocktail parfait pour toutes les occasions !</h1>
-        </header>
-
-        {/* Barre de filtre + Barre de recherche */}
-        <SearchFilterBar
-          selectedCategory={selectedCategory}
-          onCategoryChange={handleCategoryChange}
-          searchQuery={searchQuery}
-          onSearchQueryChange={handleSearchQueryChange}
-        />
-
-        {/* Liste des cocktails filtrés */}
-        <CocktailList
-          cocktails={filteredCocktails}
-          onCardClick={handleCardClick}
-          onToggleFavorite={handleToggleFavorite}
-          isFavoriteCocktail={isFavoriteCocktail}
-        />
-      </div>
-
-      <Footer />
-
-      {/* Modal pour afficher les détails du cocktail */}
-      <CocktailModal 
-        selectedCocktail={selectedCocktail}
-        onClose={closeModal}
+    <div className="home container">
+      <SearchBar onSearch={handleSearch} onReset={handleReset} />
+      <h2>{isSearching ? "Search Results" : "Cocktails of the Moment"}</h2>
+      {loading ? (
+        <p>Loading cocktails...</p>
+      ) : (
+        <div className="cocktail-grid">
+          {cocktails.map((cocktail) => (
+            <CocktailCard
+              key={cocktail.idDrink}
+              cocktail={cocktail}
+              onClick={setSelectedCocktail}
+            />
+          ))}
+        </div>
+      )}
+      <CocktailModal
+        cocktail={selectedCocktail}
+        onClose={() => setSelectedCocktail(null)}
       />
     </div>
   );
-}
+};
 
 export default Home;

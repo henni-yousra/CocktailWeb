@@ -1,22 +1,29 @@
-.home {
+.favorites {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
-.home h2 {
+.favorites h2 {
   font-size: 32px;
-  color: #ff6f61;
   margin-bottom: 20px;
+  color: #ff6f61;
 }
 
-.cocktail-grid {
+.favorites-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   width: 100%;
   max-width: 1200px;
   padding: 20px;
+}
+
+.no-favorites {
+  font-size: 18px;
+  color: #777;
+  margin-top: 20px;
 }
