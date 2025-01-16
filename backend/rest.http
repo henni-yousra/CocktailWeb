@@ -1,2 +1,9 @@
 GET  http://localhost:5000/api/auth/users
 
+# POST http://localhost:5000/contact
+# Content-Type: application/json
+
+# {
+#     "name" : "Alice",
+#     "email" : "alice@foo.com"
+# }

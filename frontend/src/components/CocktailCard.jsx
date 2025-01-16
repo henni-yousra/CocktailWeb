@@ -14,7 +14,6 @@ const CocktailCard = ({ cocktail, onClick }) => {
   const toggleFavorite = () => {
     if (!user) {
       alert("You must be logged in to add favorites.");
-      navigate("/login");
       return;
     }
 

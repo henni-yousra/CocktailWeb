@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/components/Navbar.css";
 
 const Navbar = () => {
-  const { user, login, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <nav className="navbar">
@@ -13,28 +13,29 @@ const Navbar = () => {
         <li>
           <Link to="/">Home</Link>
         </li>
-        <li>
-          <Link to="/favorites">Favorites</Link>
-        </li>
-        <li>
-          <Link to="/create-recipe">Create Recipe</Link>
-        </li>
+        {user && (
+          <>
+            <li>
+              <Link to="/favorites">Favorites</Link>
+            </li>
+            <li>
+              <Link to="/create-recipe">Create Recipe</Link>
+            </li>
+          </>
+        )}
       </ul>
       <div className="auth-actions">
         {user ? (
           <>
-            <span>{user.username}</span>
+            {/* <span className="username"></span> */}
             <button onClick={logout} className="auth-button">
               Logout
             </button>
           </>
         ) : (
-          <button
-            onClick={() => login("JohnDoe")} // Vous pouvez utiliser un formulaire pour demander le nom d'utilisateur.
-            className="auth-button"
-          >
+          <Link to="/login" className="auth-button">
             Login
-          </button>
+          </Link>
         )}
       </div>
     </nav>
