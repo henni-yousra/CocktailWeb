@@ -39,11 +39,11 @@ const CocktailCard = ({ cocktail, onClick }) => {
       >
         {isFavorite ? (
           <>
-            <span className="icon">❤️</span> Remove from Favorites
+            <span className="icon">❤️</span>
           </>
         ) : (
           <>
-            <span className="icon">🤍</span> Add to Favorites
+            <span className="icon">♡</span>
           </>
         )}
       </button>

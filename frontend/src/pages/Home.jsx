@@ -26,7 +26,7 @@ const Home = () => {
       const data = await response.json();
 
       const additionalCocktails = await Promise.all(
-        Array.from({ length: 5 }).map(() =>
+        Array.from({ length: 34 }).map(() =>
           fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
             .then((res) => res.json())
             .then((resData) => resData.drinks[0])
