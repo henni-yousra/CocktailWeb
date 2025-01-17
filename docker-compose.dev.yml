@@ -67,7 +67,7 @@ services:
     restart: always
     build:
       context: ./reverseproxy
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     depends_on:
       - frontend
       - backend

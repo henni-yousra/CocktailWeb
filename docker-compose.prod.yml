@@ -4,55 +4,71 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod 
+      context: frontend/
+      dockerfile: ./Dockerfile.prod
     ports:
-      - "4000:4000" 
-    volumes:
-      - ./frontend/build:/usr/share/nginx/html  # à verifier si le build React est dans ./frontend/build
-
+      - "4000:4000"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+    environment:
+      - VITE_API_URL=http://reverseproxy/api
 
   backend:
     container_name: backend
     build:
       context: ./backend
-      dockerfile: Dockerfile.prod 
+      dockerfile: Dockerfile.prod
     ports:
-      - "3000:3000"
+      - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/
-      - MONGO_DB=cocktaildb
+      - MONGO_URI=mongodb://mongodb:27017/cocktaildb
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
       - mongodb
       - redis
+    networks:
+      - app_network
 
   mongodb:
     container_name: mongodb
-    image: mongo:latest 
+    image: mongo
     environment:
       - MONGO_INITDB_DATABASE=cocktaildb
     volumes:
       - mongodb_data_prod:/data/db
+    networks:
+      - app_network
 
   redis:
     image: redis:7.4-alpine
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf 
       - redis_data_prod:/data
-
-  reverseproxy: 
-    restart: always
-    volumes:
-      - ./reverseproxy/nginx.prod.conf:/etc/nginx/nginx.conf
+    networks:
+      - app_network
     ports:
-      - 80:80 
+      - "6379:6379"
+
+  reverseproxy:
+    container_name: reverseproxy
+    restart: always
+    build:
+      context: ./reverseproxy
+      dockerfile: Dockerfile
     depends_on:
       - frontend
       - backend
+    ports:
+      - "8080:8080" # Utilisation du port 80 pour la production
+    networks:
+      - app_network
 
 volumes:
   mongodb_data_prod:
-  redis_data_prod:   
+  redis_data_prod:
+
+networks:
+  app_network:
+    driver: bridge

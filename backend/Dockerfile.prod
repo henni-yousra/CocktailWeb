@@ -1,16 +1,11 @@
-FROM node:23-alpine as builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN mkdir -p ./dist && npm run build
+
 
 FROM node:23-alpine
 WORKDIR /app
+
+# Copier uniquement les fichiers nécessaires pour installer les dépendances
 COPY package*.json ./
-RUN npm ci --only=production
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 3000
-
-CMD ["node", "dist/app.bundle.min.cjs"]
+RUN npm install --production
+COPY . .
+EXPOSE 5000
+CMD ["npm", "start"]
