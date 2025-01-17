@@ -60,7 +60,7 @@ const Home = () => {
         <div className="cocktail-grid">
           {cocktails.map((cocktail) => (
             <CocktailCard
-              key={cocktail.name}
+              key={cocktail.id}
               cocktail={cocktail}
               onClick={setSelectedCocktail}
             />

@@ -9,7 +9,7 @@ const CocktailCard = ({ cocktail, onClick }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const isFavorite = favorites.some((fav) => fav.idDrink === cocktail.idDrink);
+  const isFavorite = favorites.some((fav) => fav.id === cocktail.id);
 
   const toggleFavorite = () => {
     if (!user) {
@@ -18,7 +18,7 @@ const CocktailCard = ({ cocktail, onClick }) => {
     }
 
     if (isFavorite) {
-      removeFromFavorites(cocktail.idDrink);
+      removeFromFavorites(cocktail.id);
     } else {
       addToFavorites(cocktail);
     }

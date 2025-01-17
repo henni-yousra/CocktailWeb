@@ -13,7 +13,7 @@ const Favorites = () => {
         <div className="favorites-grid">
           {favorites.map((cocktail) => (
             <CocktailCard
-              key={cocktail.idDrink}
+              key={cocktail.id}
               cocktail={cocktail}
               onClick={() => {}}
             />

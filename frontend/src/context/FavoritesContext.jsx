@@ -20,14 +20,14 @@ export const FavoritesProvider = ({ children }) => {
 
   // Ajouter un cocktail aux favoris
   const addToFavorites = (cocktail) => {
-    if (!favorites.some((fav) => fav.idDrink === cocktail.idDrink)) {
+    if (!favorites.some((fav) => fav.id === cocktail.id)) {
       setFavorites([...favorites, cocktail]);
     }
   };
 
   // Supprimer un cocktail des favoris
-  const removeFromFavorites = (idDrink) => {
-    setFavorites(favorites.filter((fav) => fav.idDrink !== idDrink));
+  const removeFromFavorites = (id) => {
+    setFavorites(favorites.filter((fav) => fav.id !== id));
   };
 
   return (

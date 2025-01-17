@@ -32,7 +32,8 @@ export const getCocktails = async (req, res) => {
 
     const validApiCocktails = apiCocktails.filter(Boolean);
     const combinedCocktails = [...dbCocktails, ...validApiCocktails].map((cocktail) => ({
-      category: cocktail.strCategory,
+      id : cocktail.idDrink || cocktail._id,
+      category: cocktail.strCategory || cocktail.category,
       name: cocktail.name || cocktail.strDrink,
       image: cocktail.image || cocktail.strDrinkThumb,
       instructions: cocktail.instructions || cocktail.strInstructions,
