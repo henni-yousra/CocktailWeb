@@ -26,8 +26,8 @@ const CocktailCard = ({ cocktail, onClick }) => {
 
   return (
     <div className="cocktail-card" onClick={() => onClick(cocktail)}>
-      <img src={cocktail.strDrinkThumb} alt={cocktail.strDrink} />
-      <h3>{cocktail.strDrink}</h3>
+      <img src={cocktail.image} alt={cocktail.name} />
+      <h3>{cocktail.name}</h3>
       <button
         title={isFavorite ? "Click to remove from favorites" : "Click to add to favorites"}
         className={`favorite-button ${isFavorite ? "favorited" : ""}`}

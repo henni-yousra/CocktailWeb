@@ -10,18 +10,18 @@ const CocktailModal = ({ cocktail, onClose }) => {
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
-        <h2>{cocktail.strDrink}</h2>
-        <img src={cocktail.strDrinkThumb} alt={cocktail.strDrink} />
+        <h2>{cocktail.name}</h2>
+        <img src={cocktail.image} alt={cocktail.name} />
         <p><strong>Category:</strong> {cocktail.strCategory}</p>
         <p><strong>Ingredients:</strong></p>
         <ul>
-          {Object.keys(cocktail)
-            .filter((key) => key.startsWith("strIngredient") && cocktail[key])
-            .map((key) => (
-              <li key={key}>{cocktail[key]}</li>
-            ))}
+          {cocktail.ingredients.map((ingredient, index) => (
+            <li key={index}>
+              {ingredient}
+            </li>
+          ))}
         </ul>
-        <p>{cocktail.strInstructions}</p>
+        <p>{cocktail.instructions}</p>
       </div>
     </div>
   );

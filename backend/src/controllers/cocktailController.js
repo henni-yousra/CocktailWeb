@@ -1,9 +1,66 @@
-import Cocktail from "../models/Cocktail.js";
-import redis from "../config/redis.js";
-import User from "../models/User.js";
+import redis from "../config/redis.js"; // Instance Redis
+import Cocktail from "../models/Cocktail.js"; // Modèle Cocktail
+import fetch from "node-fetch"; // Pour interroger l'API externe
 
-// Clé de cache pour les cocktails
 const CACHE_KEY = "cocktails";
+
+export const getCocktails = async (req, res) => {
+
+  try {
+    const limit = parseInt(req.query.limit, 10) || 10; // Par défaut, limite à 10 cocktails
+    const apiCocktailCount = Math.min(limit, 5); // Limiter les cocktails de l'API à 5 pour réduire la charge
+
+    // Vérification du cache Redis
+    const cachedCocktails = await redis.get(CACHE_KEY);
+
+    if (cachedCocktails) {
+      console.log("Serving from cache");
+      return res.status(200).json(JSON.parse(cachedCocktails));
+    }
+
+    // Récupération des cocktails depuis la base de données
+    const dbCocktails = await Cocktail.find().limit(limit - apiCocktailCount);
+
+    console.log("Fetching cocktails from database:", dbCocktails.length);
+
+    // Récupération des cocktails depuis l'API externe
+    console.log("Fetching additional cocktails from external API...");
+    const apiCocktails = await Promise.all(
+      Array.from({ length: 20 }).map(() =>
+        fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
+          .then((res) => res.json())
+          .then((data) => data.drinks[0]) // Extraire un cocktail
+      )
+    );
+    console.log(apiCocktails.length, "additional cocktails fetched from API");
+
+    // Combiner les cocktails de la base de données et de l'API
+    // const combinedCocktails = [...dbCocktails, ...apiCocktails];
+
+    // Transformation des données pour ne garder que les champs nécessaires pour ne pas saturer le cache
+    const transformedCocktails = apiCocktails.map((cocktail) => ({
+      name: cocktail.strDrink, // Nom du cocktail
+      instructions: cocktail.strInstructions, // Instructions
+      image: cocktail.strDrinkThumb, // URL de l'image
+      ingredients: Object.keys(cocktail)
+        .filter((key) => key.startsWith("strIngredient")) // Filtrer les ingrédients
+        .map((key) => cocktail[key]) // Récupérer les valeurs des ingrédients
+        .filter(Boolean) // Retirer les valeurs nulles ou undefined
+        .slice(0, 5), // Garder seulement les 5 premiers ingrédients
+    }));
+    
+
+    // Mettre en cache le résultat combiné
+    //await redis.set(CACHE_KEY, JSON.stringify(transformedCocktails), { EX: 3600 }); // Expire après 1 heure
+
+    // Renvoyer les cocktails combinés
+    res.status(200).json(transformedCocktails);
+  } catch (error) {
+    console.error("Error fetching cocktails:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 // Créer un cocktail
 export const createCocktail = async (req, res) => {
@@ -45,30 +102,30 @@ export const createCocktail = async (req, res) => {
 };
 
 // Obtenir les cocktails (avec cache)
-export const getCocktails = async (req, res) => {
+// export const getCocktails = async (req, res) => {
 
-  try {
-    // Vérifier si les cocktails sont en cache
-    const cachedCocktails = await redis.get(CACHE_KEY);
+//   try {
+//     // Vérifier si les cocktails sont en cache
+//     const cachedCocktails = await redis.get(CACHE_KEY);
 
-    if (cachedCocktails) {
-      console.log("Serving from cache");
-      return res.status(200).json(JSON.parse(cachedCocktails));
-    }
+//     if (cachedCocktails) {
+//       console.log("Serving from cache");
+//       return res.status(200).json(JSON.parse(cachedCocktails));
+//     }
 
-    // Si non en cache, interroger la base de données
-    const cocktails = await Cocktail.find();
-    console.log("Serving from database");
+//     // Si non en cache, interroger la base de données
+//     const cocktails = await Cocktail.find();
+//     console.log("Serving from database");
 
-    // Mettre en cache les résultats
-    await redis.set(CACHE_KEY, JSON.stringify(cocktails), { EX: 3600 }); // Expire après 1 heure
+//     // Mettre en cache les résultats
+//     await redis.set(CACHE_KEY, JSON.stringify(cocktails), { EX: 3600 }); // Expire après 1 heure
 
-    res.status(200).json(cocktails);
-  } catch (error) {
-    console.error("Error fetching cocktails:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+//     res.status(200).json(cocktails);
+//   } catch (error) {
+//     console.error("Error fetching cocktails:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
 // Ajouter un favori
 export const addFavorite = async (req, res) => {

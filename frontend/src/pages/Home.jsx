@@ -3,7 +3,7 @@ import SearchBar from "../components/SearchBar";
 import CocktailCard from "../components/CocktailCard";
 import CocktailModal from "../components/CocktailModal";
 import "../styles/pages/Home.css";
-
+const API_URL = import.meta.env.VITE_API_URL;
 const Home = () => {
   const [cocktails, setCocktails] = useState([]);
   const [selectedCocktail, setSelectedCocktail] = useState(null);
@@ -20,20 +20,10 @@ const Home = () => {
   const fetchCocktailsOfTheMoment = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        "https://www.thecocktaildb.com/api/json/v1/1/random.php"
-      );
+      const response = await fetch(`/api/cocktails/`);
       const data = await response.json();
-
-      const additionalCocktails = await Promise.all(
-        Array.from({ length: 34 }).map(() =>
-          fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
-            .then((res) => res.json())
-            .then((resData) => resData.drinks[0])
-        )
-      );
-
-      setCocktails([data.drinks[0], ...additionalCocktails]);
+      setCocktails(data);
+      console.log(data, "cocktails fetched from API");
     } catch (error) {
       console.error("Error fetching cocktails of the moment:", error);
     } finally {

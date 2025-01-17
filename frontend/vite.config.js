@@ -6,9 +6,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://reverseproxy:80',  // Ensure it points to reverseproxy, not directly to backend
+        target: 'http://reverseproxy:8080/api',  // Ensure it points to reverseproxy, not directly to backend
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path
       },
     },
     host: true,
