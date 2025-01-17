@@ -11,12 +11,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  favorites: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Cocktail",
-    },
-  ],
+  favorites: {
+    type: [Number],
+    default: [],   
+  }
 });
 
 UserSchema.pre("save", async function (next) {

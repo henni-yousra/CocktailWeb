@@ -101,50 +101,150 @@ export const createCocktail = async (req, res) => {
   }
 };
 
-// Ajouter un favori
+
 export const addFavorite = async (req, res) => {
-  const { cocktailId } = req.body;
+
+  const cocktailId = (req.body.cocktailId); // Récupérer l'identifiant du cocktail depuis les paramètres
+
   try {
     const user = await User.findById(req.user.id);
+
     if (!user.favorites.includes(cocktailId)) {
       user.favorites.push(cocktailId);
       await user.save();
+
+      // Invalider le cache des favoris pour cet utilisateur
+      await redis.del(`favorites:${req.user.id}`);
     }
+
+    res.status(200).json({ message: "Cocktail added to favorites" });
+  } catch (error) {
+    console.error("Error adding favorite:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+export const removeFavorite = async (req, res) => {
+  const { cocktailId } = parseInt(req.body.cocktailId); // Récupérer l'identifiant du cocktail depuis les paramètres
+
+  try {
+    // Récupérer l'utilisateur connecté
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Vérifier si le cocktail est déjà dans les favoris
+    const favoriteIndex = user.favorites.indexOf(cocktailId);
+
+    if (favoriteIndex === -1) {
+      return res.status(404).json({ message: "Cocktail not found in favorites" });
+    }
+
+    // Retirer le cocktail des favoris
+    user.favorites.splice(favoriteIndex, 1);
+    await user.save();
 
     // Invalider le cache des favoris pour cet utilisateur
     await redis.del(`favorites:${req.user.id}`);
 
-    res.status(200).json({ message: "Cocktail added to favorites" });
+    res.status(200).json({ message: "Cocktail removed from favorites" });
   } catch (error) {
+    console.error("Error removing favorite:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// Obtenir les favoris (avec cache)
+
+
 export const getFavorites = async (req, res) => {
   try {
-    const cacheKey = `favorites:${req.user.id}`;
-
-    // Vérifier si les favoris sont en cache
-    const cachedFavorites = await redis.get(cacheKey);
-
-    if (cachedFavorites) {
-      console.log("Serving favorites from cache");
-      return res.status(200).json(JSON.parse(cachedFavorites));
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+      console.log("user not found");
     }
 
-    // Si non en cache, interroger la base de données
-    const user = await User.findById(req.user.id).populate("favorites");
-    console.log("Serving favorites from database");
+    // Vérifier le cache Redis pour les favoris
+    // const cachedFavorites = await redis.get(`favorites:${req.user.id}`);
+    // if (cachedFavorites) {
+    //   return res.status(200).json(JSON.parse(cachedFavorites));
+    // }
 
-    // Mettre en cache les favoris
-    await redis.set(cacheKey, JSON.stringify(user.favorites), "EX", 3600); // Expire après 1 heure
+    // Récupérer les détails des cocktails
+    const favoriteCocktails = await Promise.all(
+      user.favorites.map(async (cocktailId) => {
+        try {
+          // Vérifiez dans votre propre base de données (si vous stockez les cocktails localement)
+          const cachedCocktail = await Cocktail.findOne({ id: cocktailId });
+          if (cachedCocktail) {
+            return cachedCocktail;
+          }
 
-    res.status(200).json(user.favorites);
+          // Si le cocktail n'est pas en base, interrogez TheCocktailDB
+          const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`);
+          const data = await response.json();
+          const drink = data.drinks[0];
+      
+          const extractedData = {
+            id: drink.idDrink,
+            name: drink.strDrink,
+            image: drink.strDrinkThumb,
+            instructions: drink.strInstructions,
+            ingredients: Object.entries(drink)
+              .filter(([key, value]) => key.startsWith("strIngredient") && value) // Récupère les ingrédients non vides
+              .map(([_, value]) => value),
+          };
+          return extractedData;
+
+        } catch (error) {
+          console.error(`Error fetching details for cocktail ID ${cocktailId}:`, error);
+          return null;
+        }
+      })
+    );
+
+    // Filtrer les cocktails null (erreurs de récupération)
+    const validFavorites = favoriteCocktails.filter((cocktail) => cocktail !== null);
+
+    // Mettre les favoris dans le cache Redis
+    await redis.set(`favorites:${req.user.id}`, JSON.stringify(validFavorites), "EX", 3600); // Expiration : 1 heure
+
+    res.status(200).json(validFavorites);
   } catch (error) {
+    console.error("Error fetching favorites:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+// Obtenir les favoris (avec cache)
+// export const getFavorites = async (req, res) => {
+//   try {
+//     const cacheKey = `favorites:${req.user.id}`;
+
+//     // Vérifier si les favoris sont en cache
+//     const cachedFavorites = await redis.get(cacheKey);
+
+//     if (cachedFavorites) {
+//       console.log("Serving favorites from cache");
+//       return res.status(200).json(JSON.parse(cachedFavorites));
+//     }
+
+//     // Si non en cache, interroger la base de données
+//     const user = await User.findById(req.user.id).populate("favorites");
+//     console.log("Serving favorites from database");
+
+//     // Mettre en cache les favoris
+//     await redis.set(cacheKey, JSON.stringify(user.favorites), "EX", 3600); // Expire après 1 heure
+
+//     res.status(200).json(user.favorites);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
 export const getSearchCocktails = async (req, res) => {
   const { query } = req.query;

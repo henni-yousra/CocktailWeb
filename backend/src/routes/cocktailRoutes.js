@@ -5,6 +5,7 @@ import {
   getFavorites,
   addFavorite,
   getSearchCocktails,
+  removeFavorite,
 } from "../controllers/cocktailController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/multer.js";
@@ -16,4 +17,5 @@ router.post("/", protect, upload.single("image"), createCocktail); // Authentifi
 router.get("/favorites", protect, getFavorites); // Authentifié : Obtenir les favoris
 router.post("/favorites", protect, addFavorite); // Authentifié : Ajouter un favori
 router.get("/searchCocktails", getSearchCocktails);
+router.delete("/favorites/:id", protect, removeFavorite); // Authentifié : Supprimer un favori
 export default router;
