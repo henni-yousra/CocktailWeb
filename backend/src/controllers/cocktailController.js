@@ -32,6 +32,7 @@ export const getCocktails = async (req, res) => {
 
     const validApiCocktails = apiCocktails.filter(Boolean);
     const combinedCocktails = [...dbCocktails, ...validApiCocktails].map((cocktail) => ({
+      category: cocktail.strCategory,
       name: cocktail.name || cocktail.strDrink,
       image: cocktail.image || cocktail.strDrinkThumb,
       instructions: cocktail.instructions || cocktail.strInstructions,
@@ -44,7 +45,6 @@ export const getCocktails = async (req, res) => {
 
     // Sérialisation des données
     const dataToCache = JSON.stringify(combinedCocktails);
-    console.log("Data to cache:", dataToCache);
 
     // Stockage avec expiration séparée
     await redis.set(CACHE_KEY, dataToCache);
@@ -100,32 +100,6 @@ export const createCocktail = async (req, res) => {
   }
 };
 
-// Obtenir les cocktails (avec cache)
-// export const getCocktails = async (req, res) => {
-
-//   try {
-//     // Vérifier si les cocktails sont en cache
-//     const cachedCocktails = await redis.get(CACHE_KEY);
-
-//     if (cachedCocktails) {
-//       console.log("Serving from cache");
-//       return res.status(200).json(JSON.parse(cachedCocktails));
-//     }
-
-//     // Si non en cache, interroger la base de données
-//     const cocktails = await Cocktail.find();
-//     console.log("Serving from database");
-
-//     // Mettre en cache les résultats
-//     await redis.set(CACHE_KEY, JSON.stringify(cocktails), { EX: 3600 }); // Expire après 1 heure
-
-//     res.status(200).json(cocktails);
-//   } catch (error) {
-//     console.error("Error fetching cocktails:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
-
 // Ajouter un favori
 export const addFavorite = async (req, res) => {
   const { cocktailId } = req.body;
@@ -170,3 +144,46 @@ export const getFavorites = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const getSearchCocktails = async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ message: "Query parameter is required" });
+  }
+
+  try {
+    // URL pour rechercher par nom
+    const apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`;
+
+    // Appel API
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      throw new Error(`Error fetching from TheCocktailDB: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Transformez les résultats si nécessaires
+    const results = data.drinks
+      ? data.drinks.map((drink) => ({
+          id: drink.idDrink,
+          name: drink.strDrink,
+          image: drink.strDrinkThumb,
+          instructions: drink.strInstructions,
+          category: drink.strCategory,
+          ingredients: Object.keys(drink)
+            .filter((key) => key.startsWith("strIngredient"))
+            .map((key) => drink[key])
+            .filter(Boolean),
+        }))
+      : [];
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error searching cocktails:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+

@@ -3,7 +3,7 @@ import SearchBar from "../components/SearchBar";
 import CocktailCard from "../components/CocktailCard";
 import CocktailModal from "../components/CocktailModal";
 import "../styles/pages/Home.css";
-const API_URL = import.meta.env.VITE_API_URL;
+
 const Home = () => {
   const [cocktails, setCocktails] = useState([]);
   const [selectedCocktail, setSelectedCocktail] = useState(null);
@@ -23,7 +23,6 @@ const Home = () => {
       const response = await fetch(`/api/cocktails/`);
       const data = await response.json();
       setCocktails(data);
-      console.log(data, "cocktails fetched from API");
     } catch (error) {
       console.error("Error fetching cocktails of the moment:", error);
     } finally {
@@ -36,10 +35,10 @@ const Home = () => {
       setLoading(true);
       setIsSearching(true);
       const response = await fetch(
-        `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${query}`
+        `/api/cocktails/searchCocktails?query=${encodeURIComponent(query)}`
       );
       const data = await response.json();
-      setCocktails(data.drinks || []);
+      setCocktails(data);
     } catch (error) {
       console.error("Error searching for cocktails:", error);
     } finally {
@@ -61,7 +60,7 @@ const Home = () => {
         <div className="cocktail-grid">
           {cocktails.map((cocktail) => (
             <CocktailCard
-              key={cocktail.idDrink}
+              key={cocktail.name}
               cocktail={cocktail}
               onClick={setSelectedCocktail}
             />
