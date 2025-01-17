@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/pages/Signup.css";
 
 const Signup = () => {
@@ -43,6 +43,9 @@ const Signup = () => {
         {error && <p className="error">{error}</p>}
         <button type="submit">Signup</button>
       </form>
+      <p>
+        Already have an account? <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 };

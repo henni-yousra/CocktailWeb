@@ -126,7 +126,14 @@ export const addFavorite = async (req, res) => {
 
 
 export const removeFavorite = async (req, res) => {
-  const { cocktailId } = parseInt(req.body.cocktailId); // Récupérer l'identifiant du cocktail depuis les paramètres
+  /* l'erreur était dans l'extraction de l'identifiant du cocktail
+
+  //const { cocktailId } = parseInt(req.body.cocktailId);
+    
+  Cela pose problème car : parseInt est appliqué directement sur un objet destructuré, ce qui ne fonctionne pas.
+    L'ID semble être passé dans l'URL (/favorites/:id) et non dans le corps de la requête.
+    */
+  const cocktailId = parseInt(req.params.id); // Récupère l'ID depuis les paramètres de l'URL
 
   try {
     // Récupérer l'utilisateur connecté
