@@ -141,6 +141,18 @@ const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
+
+  // Fonction pour décoder un token JWT
+  const decodeToken = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Décoder le payload JWT
+      return payload;
+    } catch (error) {
+      console.error("Invalid token format:", error);
+      return null;
+    }
+  };
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const storedToken = localStorage.getItem("token");
@@ -167,38 +179,51 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await new Promise((resolve) =>
-        setTimeout(() => {
-          const expirationTime = Date.now() + 60 * 60 * 1000; // 1 heure
-          resolve({
-            token: JSON.stringify({ exp: expirationTime, email }), // Token JSON valide
-            user: { email },
-          });
-        }, 1000)
-      );
-
-      const { token, user } = response;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
-
-      return { success: true };
+      const response = await fetch(`api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        return { success: false, message: errorData.message || "Login failed" };
+      }
+  
+      const data = await response.json();
+      localStorage.setItem("authToken", data.token);
+      const tokenData = decodeToken(data.token);
+      setUser({ email: tokenData.email });
+  
+      return { success: true }; // Retourne un succès
     } catch (error) {
       console.error("Login failed:", error);
-      return { success: false, message: "Invalid email or password" };
+      return { success: false, message: "An error occurred during login" };
     }
   };
 
+
   const signup = async (email, password) => {
     try {
-      const response = await new Promise((resolve) =>
-        setTimeout(() => resolve({ success: true }), 1000)
-      );
-      return response;
+      const response = await fetch(`api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Signup failed");
+      }
+
+      return { success: true };
     } catch (error) {
       console.error("Signup failed:", error);
-      return { success: false, message: "Signup error" };
+      return { success: false, message: error.message };
     }
   };
 
