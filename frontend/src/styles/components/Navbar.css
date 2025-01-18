@@ -1,3 +1,13 @@
+@import "https://fonts.googleapis.com/css2?family=Lobster&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;700&display=swap";
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Oswald, sans-serif;
+}
+
 .navbar {
   position: sticky;
   top: 0;
@@ -14,20 +24,49 @@
 .navbar h1 {
   margin: 0;
   font-size: 24px;
+  font-family: Lobster, cursive;
 }
 
 .navbar-links {
   list-style: none;
   display: flex;
-  gap: 15px;
+  gap: 20px;
 }
 
 .navbar-links a {
   color: white;
   text-decoration: none;
   font-size: 18px;
+  font-weight: bold;
+
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
 }
 
 .navbar-links a:hover {
-  text-decoration: underline;
+  background-color: #ce4a4a;
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-3px);
+}
+
+.navbar-links a:active {
+  transform: translateY(1px);
+}
+
+button {
+  background-color: #ffd700;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #e6c200;
 }

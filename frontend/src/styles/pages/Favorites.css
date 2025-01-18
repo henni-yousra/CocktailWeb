@@ -8,9 +8,19 @@
 }
 
 .favorites h2 {
-  font-size: 32px;
+  font-size: 40px;
   margin-bottom: 20px;
   color: #ff6f61;
+  font-family: Lobster, cursive; /* Cursive font */
+  font-weight: normal; /* Ensures the font appears in its natural weight */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow for elegance */
+  letter-spacing: 1px; /* Adds slight letter spacing for a more polished look */
+  transition: transform 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.favorites h2:hover {
+  transform: scale(1.1); /* Slightly enlarges the text on hover */
+  color: #e55d52; /* Darker shade for hover */
 }
 
 .favorites-grid {

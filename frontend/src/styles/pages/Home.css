@@ -1,3 +1,13 @@
+@import "https://fonts.googleapis.com/css2?family=Lobster&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;700&display=swap";
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Oswald, sans-serif;
+}
+
 .home {
   flex: 1;
   display: flex;
@@ -10,6 +20,7 @@
   font-size: 32px;
   color: #ff6f61;
   margin-bottom: 20px;
+  font-family: Lobster, cursive;
 }
 
 .cocktail-grid {
@@ -19,4 +30,63 @@
   width: 100%;
   max-width: 1200px;
   padding: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0;
+  flex-wrap: nowrap;
+  box-shadow: 0 0 42px -9px #0000001a;
+  border-radius: 4px;
+  width: 370px;
+  cursor: pointer;
+  transition: all 0.35s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  background-color: #f96160;
+  color: #fff;
+}
+
+.card .titles {
+  padding: 5px 0;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  line-height: 1;
+  width: 90%;
+}
+
+.card .titles .title {
+  font-size: 2rem;
+  margin-top: 7px;
+  margin-bottom: 4px;
+  color: #f96160;
+  font-family: Lobster, cursive;
+}
+
+.card .titles .category,
+.card .titles .alcohol {
+  font-size: 1.2rem;
+}
+
+.card .instructions {
+  padding: 5px 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.card img {
+  border-radius: 4px 100px 4px 4px;
+  width: 340px;
+  border-top: 5px solid #f96160;
+}
+
+.card:hover .title {
+  color: #fff;
 }

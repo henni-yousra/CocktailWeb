@@ -6,6 +6,7 @@ const CreateRecipe = () => {
   const { user } = useAuth(); // Verify if the user is logged in
   const [recipe, setRecipe] = useState({ name: "", ingredients: "", steps: "" });
   const [recipes, setRecipes] = useState([]); // Local list of created recipes
+  const [success, setSuccess] = useState(false); // State to track success
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,9 +46,11 @@ const CreateRecipe = () => {
       
       setRecipes([...recipes, responseData]); // Add new recipe to local list
       setRecipe({ name: "", ingredients: "", steps: "" }); // Reset the form
+      setSuccess(true); // Set success to true
     } catch (error) {
       console.error("Error creating recipe:", error);
       alert("Failed to create the recipe. Please try again.");
+      setSuccess(false); // Set success to false if error occurs
     }
   };
 
@@ -85,6 +88,9 @@ const CreateRecipe = () => {
         </form>
       )}
 
+      <br />
+
+      {success && <div className="success-message">Recipe created successfully!</div>}
     </div>
   );
 };

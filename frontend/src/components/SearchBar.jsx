@@ -25,7 +25,8 @@ const SearchBar = ({ onSearch, onReset }) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button type="submit">Search</button>
+        
+        <button className="search-bar-button" type="submit">Search</button>
       </form>
       <button className="reset-button" onClick={handleReset}>
         Reset

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../styles/pages/Community-Recipes.css";
 
+const defaultImage = "/cocktail-default.png"; 
+
 const CommunityRecipes = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,32 +24,33 @@ const CommunityRecipes = () => {
 
   return (
     <div className="community-recipes container">
-      <h1>Community Recipes</h1>
+      <h2>Community Recipes</h2>
       {loading ? (
         <p>Loading recipes...</p>
       ) : recipes.length > 0 ? (
         <div className="recipe-grid">
           {recipes.map((recipe) => (
-            <div key={recipe._id} className="recipe-card">
-              {recipe.image && (
-                <img
-                  src={`data:${recipe.imageType};base64,${Buffer.from(
-                    recipe.image
-                  ).toString("base64")}`}
-                  alt={recipe.name}
-                />
-              )}
-              <h2>{recipe.name}</h2>
-              <p>
-                <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
-              </p>
-              <p>
-                <strong>Instructions:</strong> {recipe.instructions}
-              </p>
-              <p>
-                <strong>Created By:</strong> {recipe.creator ? recipe.creator.username : "unknown" }
-                <p></p>
-              </p>
+            <div key={recipe._id} className="card">
+              <img
+                src={defaultImage} // Display the default image
+                alt={recipe.name}
+              />
+              <div className="titles">
+                <h3 className="title">{recipe.name}</h3>
+
+              </div>
+              <div className="instructions">
+                <p>
+                  <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
+                </p>
+                <p>
+                  <strong>Instructions:</strong> {recipe.instructions}
+                </p>
+                <br />
+                <p>
+                  <strong>Created By:</strong> {recipe.creator ? recipe.creator.username : "unknown"}
+                </p>
+              </div>
             </div>
           ))}
         </div>
