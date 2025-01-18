@@ -17,8 +17,8 @@ export const getCocktails = async (req, res) => {
       return res.status(200).json(JSON.parse(cachedCocktails));
     }
 
-    // Récupération des cocktails depuis la base de données
-    const dbCocktails = await Cocktail.find().limit(apiCocktailCount);
+    // Récupération des cocktails depuis la base de données, excluant ceux créés par la communauté
+    const dbCocktails = await Cocktail.find({ source: { $ne: "community" } }).limit(apiCocktailCount);
 
     // Récupération des cocktails depuis l'API
     const apiCocktails = await Promise.all(

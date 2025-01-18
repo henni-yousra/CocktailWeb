@@ -8,19 +8,20 @@ const generateToken = (id) => {
 
 // Inscription
 export const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
   try {
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const user = await User.create({ email, password });
+    const user = await User.create({ username, email, password });
     const token = generateToken(user._id);
 
     res.status(201).json({
       _id: user._id,
       email: user.email,
+      username: user.username,
       token,
     });
   } catch (error) {

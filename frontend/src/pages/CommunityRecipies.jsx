@@ -45,7 +45,8 @@ const CommunityRecipes = () => {
                 <strong>Instructions:</strong> {recipe.instructions}
               </p>
               <p>
-                <strong>Created By:</strong> {recipe.creator?.username || "Unknown"}
+                <strong>Created By:</strong> {recipe.creator ? recipe.creator.username : "unknown" }
+                <p></p>
               </p>
             </div>
           ))}
