@@ -21,6 +21,9 @@ const Navbar = () => {
             <li>
               <Link to="/create-recipe">Create Recipe</Link>
             </li>
+            <li>
+              <a href="/community-recipes">Community Recipes</a>
+            </li>
           </>
         )}
       </ul>

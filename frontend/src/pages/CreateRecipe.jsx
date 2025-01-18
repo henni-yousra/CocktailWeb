@@ -2,48 +2,49 @@ import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import "../styles/pages/CreateRecipe.css";
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-
 const CreateRecipe = () => {
-  const { user } = useAuth(); // Vérifie si l'utilisateur est connecté
+  const { user } = useAuth(); // Verify if the user is logged in
   const [recipe, setRecipe] = useState({ name: "", ingredients: "", steps: "" });
-  const [image, setImage] = useState(null); // Stocker l'image
-  const [recipes, setRecipes] = useState([]); // Liste locale des recettes créées
+  const [recipes, setRecipes] = useState([]); // Local list of created recipes
 
-  // Gère la soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!user) {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
       alert("You must be logged in to create a recipe.");
       return;
     }
 
-    // Créer le payload avec FormData pour inclure l'image
-    const formData = new FormData();
-    formData.append("name", recipe.name);
-    formData.append("ingredients", recipe.ingredients);
-    formData.append("instructions", recipe.steps);
-    formData.append("creator", user.id); // Ajoute l'auteur
-    if (image) {
-      formData.append("image", image);
-    }
+    const payload = {
+      name: recipe.name,
+      ingredients: recipe.ingredients.split(",").map((item) => item.trim()),
+      instructions: recipe.steps,
+      creator: user.id, // Use logged-in user's ID
+      source: "community", // Set source to "community"
+    };
+
+    console.log("Payload:", payload);
 
     try {
-      // Envoyer les données au backend
-      const response = await fetch(`/api/cocktails`,{
+      const response = await fetch("/api/cocktails/", {
+        method: "POST",
         headers: {
-          "Content-Type": "multipart/form-data",
-          "method": "POST",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Send the token in headers
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload), // Send JSON payload
       });
 
-      // Ajouter la nouvelle recette à la liste locale
-      setRecipes([...recipes, response.data]);
-      setRecipe({ name: "", ingredients: "", steps: "" }); // Réinitialise le formulaire
-      setImage(null); // Réinitialise l'image
+      if (!response.ok) {
+        throw new Error("Failed to create the recipe. Status: " + response.status);
+      }
+
+      const responseData = await response.json(); // Read the response once
+      console.log("Response Data:", responseData);
+      
+      setRecipes([...recipes, responseData]); // Add new recipe to local list
+      setRecipe({ name: "", ingredients: "", steps: "" }); // Reset the form
     } catch (error) {
       console.error("Error creating recipe:", error);
       alert("Failed to create the recipe. Please try again.");
@@ -80,28 +81,10 @@ const CreateRecipe = () => {
             onChange={(e) => setRecipe({ ...recipe, steps: e.target.value })}
             required
           />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])} // Stocke le fichier dans l'état
-          />
           <button type="submit">Save Recipe</button>
         </form>
       )}
-      <div className="recipes-list">
-        <h3>Your Created Recipes:</h3>
-        {recipes.length > 0 ? (
-          <ul>
-            {recipes.map((recipe) => (
-              <li key={recipe._id}>
-                <strong>{recipe.name}</strong>: {recipe.ingredients}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No recipes created yet.</p>
-        )}
-      </div>
+
     </div>
   );
 };

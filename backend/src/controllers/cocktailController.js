@@ -61,7 +61,7 @@ export const getCocktails = async (req, res) => {
 
 
 
-
+/*
 // Créer un cocktail
 export const createCocktail = async (req, res) => {
   try {
@@ -100,7 +100,7 @@ export const createCocktail = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
+*/
 
 export const addFavorite = async (req, res) => {
 
@@ -295,3 +295,68 @@ export const getSearchCocktails = async (req, res) => {
   }
 };
 
+
+export const deleteCocktail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Cocktail.findByIdAndDelete(id); // Ensure it deletes from the database
+    res.status(204).send(); // No Content
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+export const getCommunityRecipes = async (req, res) => {
+  try {
+    const apiCocktailCount = 20;
+
+    // Make sure to use the correct collection and schema to fetch the data
+    const dbCocktails = await Cocktail.find({ source: 'community' })
+      .limit(apiCocktailCount)
+      .populate('creator', 'username');  // Populate creator field
+
+    if (!dbCocktails || dbCocktails.length === 0) {
+      console.log('No community cocktails found in the database.');
+    } else {
+      console.log('Community cocktails fetched:', dbCocktails);
+    }
+    res.json(dbCocktails);  // Return the fetched data as JSON
+  } catch (err) {
+    console.error('Error fetching community cocktails:', err);
+    res.status(500).json({ message: 'Error fetching community cocktails.' });
+  }
+};
+
+
+// Créer un cocktail
+
+export const createCocktail = async (req, res) => {
+
+  console.log("Request Body:", req.body);
+
+  const { name, ingredients, instructions, creator, source } = req.body;
+
+  // Validate required fields
+  if (!name || !ingredients || !instructions || !creator || !source) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    const newCocktail = new Cocktail({
+      name,
+      ingredients: Array.isArray(ingredients) ? ingredients : ingredients.split(",").map((i) => i.trim()), // Handle both array and comma-separated string
+      instructions,
+      creator, // Creator is the user ID
+      source, // 'community' 
+    });
+
+    await newCocktail.save();
+    return res.status(201).json(newCocktail);
+  } catch (error) {
+    console.error(error);
+    if (!res.headersSent) {
+      return res.status(500).json({ message: "Server Error" });
+    }
+  }
+};

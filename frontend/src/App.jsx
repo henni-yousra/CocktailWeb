@@ -9,6 +9,9 @@ import Favorites from "./pages/Favorites";
 import CreateRecipe from "./pages/CreateRecipe";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import CommunityRecipes from "./pages/CommunityRecipies";
+
+
 import "./styles/App.css";
 
 const App = () => {
@@ -41,6 +44,10 @@ const App = () => {
                   </ProtectedRoute>
                 }
               />
+
+              <Route path="/community-recipes" element={<CommunityRecipes />} />
+
+
             </Routes>
           </div>
         </FavoritesProvider>
