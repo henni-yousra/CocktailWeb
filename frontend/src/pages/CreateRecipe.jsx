@@ -1,13 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import "../styles/pages/CreateRecipe.css";
 
 const CreateRecipe = () => {
-  const { user } = useAuth(); // Verify if the user is logged in
+  const { user } = useAuth(); // Vérifie si l'utilisateur est connecté
   const [recipe, setRecipe] = useState({ name: "", ingredients: "", steps: "" });
-  const [recipes, setRecipes] = useState([]); // Local list of created recipes
-  const [success, setSuccess] = useState(false); // State to track success
+  const [recipes, setRecipes] = useState([]); // Liste locale des cocktails
+  const [success, setSuccess] = useState(false); // Suivi du succès de la création
 
+  // Charger les cocktails créés par l'utilisateur
+  useEffect(() => {
+    const fetchUserCocktails = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        alert("You must be logged in to view your cocktails.");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/cocktails/myCocktails", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Envoie le token dans les headers
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch cocktails. Status: " + response.status);
+        }
+
+        const data = await response.json(); // Récupère les cocktails
+        setRecipes(data); // Met à jour l'état local
+      } catch (error) {
+        console.error("Error fetching user's cocktails:", error);
+        alert("Failed to fetch cocktails. Please try again.");
+      }
+    };
+
+    if (user) {
+      fetchUserCocktails(); // Appelle la fonction si l'utilisateur est connecté
+    }
+  }, [user]); // Exécute l'effet lorsque l'utilisateur change
+
+  // Gestion de la création de recette
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -21,36 +57,32 @@ const CreateRecipe = () => {
       name: recipe.name,
       ingredients: recipe.ingredients.split(",").map((item) => item.trim()),
       instructions: recipe.steps,
-      creator: user.id, // Use logged-in user's ID
-      source: "community", // Set source to "community"
+      creator: user.id, // Utilise l'ID de l'utilisateur connecté
+      source: "community", // Définit la source comme "community"
     };
-
-    console.log("Payload:", payload);
 
     try {
       const response = await fetch("/api/cocktails/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Send the token in headers
+          Authorization: `Bearer ${token}`, // Envoie le token dans les headers
         },
-        body: JSON.stringify(payload), // Send JSON payload
+        body: JSON.stringify(payload), // Envoie le payload JSON
       });
 
       if (!response.ok) {
         throw new Error("Failed to create the recipe. Status: " + response.status);
       }
 
-      const responseData = await response.json(); // Read the response once
-      console.log("Response Data:", responseData);
-      
-      setRecipes([...recipes, responseData]); // Add new recipe to local list
-      setRecipe({ name: "", ingredients: "", steps: "" }); // Reset the form
-      setSuccess(true); // Set success to true
+      const responseData = await response.json(); // Lit la réponse une fois
+      setRecipes([...recipes, responseData]); // Ajoute la nouvelle recette à la liste locale
+      setRecipe({ name: "", ingredients: "", steps: "" }); // Réinitialise le formulaire
+      setSuccess(true); // Définit le succès sur vrai
     } catch (error) {
       console.error("Error creating recipe:", error);
       alert("Failed to create the recipe. Please try again.");
-      setSuccess(false); // Set success to false if error occurs
+      setSuccess(false); // Définit le succès sur faux en cas d'erreur
     }
   };
 
@@ -62,35 +94,56 @@ const CreateRecipe = () => {
           You must be logged in to create a recipe. Please log in to continue.
         </p>
       ) : (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Cocktail Name"
-            value={recipe.name}
-            onChange={(e) => setRecipe({ ...recipe, name: e.target.value })}
-            required
-          />
-          <textarea
-            placeholder="Ingredients (comma separated)"
-            value={recipe.ingredients}
-            onChange={(e) =>
-              setRecipe({ ...recipe, ingredients: e.target.value })
-            }
-            required
-          />
-          <textarea
-            placeholder="Steps to prepare"
-            value={recipe.steps}
-            onChange={(e) => setRecipe({ ...recipe, steps: e.target.value })}
-            required
-          />
-          <button type="submit">Save Recipe</button>
-        </form>
+        <>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Cocktail Name"
+              value={recipe.name}
+              onChange={(e) => setRecipe({ ...recipe, name: e.target.value })}
+              required
+            />
+            <textarea
+              placeholder="Ingredients (comma separated)"
+              value={recipe.ingredients}
+              onChange={(e) =>
+                setRecipe({ ...recipe, ingredients: e.target.value })
+              }
+              required
+            />
+            <textarea
+              placeholder="Steps to prepare"
+              value={recipe.steps}
+              onChange={(e) => setRecipe({ ...recipe, steps: e.target.value })}
+              required
+            />
+            <button type="submit">Save Recipe</button>
+          </form>
+
+          {success && (
+            <div className="success-message">Recipe created successfully!</div>
+          )}
+
+          <h3>Your Created Cocktails</h3>
+          <div className="recipe-list">
+            {recipes.length > 0 ? (
+              recipes.map((recipe, index) => (
+                <div key={index} className="recipe-card">
+                  <h4>{recipe.name}</h4>
+                  <p>
+                    <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
+                  </p>
+                  <p>
+                    <strong>Steps:</strong> {recipe.instructions}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No recipes created yet.</p>
+            )}
+          </div>
+        </>
       )}
-
-      <br />
-
-      {success && <div className="success-message">Recipe created successfully!</div>}
     </div>
   );
 };

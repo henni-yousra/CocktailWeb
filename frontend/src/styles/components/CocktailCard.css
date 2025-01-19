@@ -92,3 +92,19 @@
     font-size: 14px;
   }
 }
+
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}

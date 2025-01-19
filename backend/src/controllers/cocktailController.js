@@ -295,18 +295,7 @@ export const getSearchCocktails = async (req, res) => {
   }
 };
 
-
-export const deleteCocktail = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Cocktail.findByIdAndDelete(id); // Ensure it deletes from the database
-    res.status(204).send(); // No Content
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-
+// Obtenir les cocktails de la communauté
 export const getCommunityRecipes = async (req, res) => {
   try {
     const apiCocktailCount = 20;
@@ -358,5 +347,44 @@ export const createCocktail = async (req, res) => {
     if (!res.headersSent) {
       return res.status(500).json({ message: "Server Error" });
     }
+  }
+};
+
+
+
+// List all cocktails created by the authenticated user
+export const getUserCocktails = async (req, res) => {
+  try {
+    const cocktails = await Cocktail.find({ creator: req.user.id });
+    res.status(200).json(cocktails);
+  } catch (error) {
+    console.error("Error fetching user's cocktails:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const deleteCocktail = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid cocktail ID" });
+    }
+
+    console.log("User ID:", req.user.id);
+    console.log("Cocktail ID:", id);
+
+    const cocktail = await Cocktail.findOne({ _id: id, creator: req.user.id });
+
+    if (!cocktail) {
+      return res.status(404).json({ message: "Cocktail not found or not authorized to delete" });
+    }
+
+    await cocktail.remove();
+    res.status(200).json({ message: "Cocktail deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting cocktail:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
