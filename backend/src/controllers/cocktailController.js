@@ -2,6 +2,9 @@ import redis from "../config/redis.js"; // Instance Redis
 import Cocktail from "../models/Cocktail.js"; // Modèle Cocktail
 import fetch from "node-fetch"; // Pour interroger l'API externe
 import User from "../models/User.js"; // Modèle User
+import mongoose from "mongoose";
+
+
 
 const CACHE_KEY = "cocktails";
 
@@ -365,11 +368,14 @@ export const getUserCocktails = async (req, res) => {
 
 
 
+
 export const deleteCocktail = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Received cocktail ID:", id); // Log ID
-    console.log("Authenticated user ID:", req.user?.id); // Log user ID
+
+    // Log for debugging
+    console.log("Received cocktail ID:", id);
+    console.log("Authenticated user ID:", req.user?.id);
 
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -377,18 +383,20 @@ export const deleteCocktail = async (req, res) => {
       return res.status(400).json({ message: "Invalid cocktail ID" });
     }
 
-    const cocktail = await Cocktail.findOne({ _id: id, creator: req.user.id });
+    // Find and delete the cocktail created by the authenticated user
+    const cocktail = await Cocktail.findOneAndDelete({ _id: id, creator: req.user.id });
+
     if (!cocktail) {
-      console.error("Cocktail not found or unauthorized");
-      return res
-        .status(404)
-        .json({ message: "Cocktail not found or not authorized to delete" });
+      console.error("Cocktail not found or not owned by the user");
+      return res.status(404).json({ message: "Cocktail not found or unauthorized" });
     }
 
-    await cocktail.remove();
+    // Invalidate cache for cocktails
+    await redis.del("cocktails");
+
     res.status(200).json({ message: "Cocktail deleted successfully" });
   } catch (error) {
-    console.error("Error deleting cocktail:", error); // Log full error
+    console.error("Error deleting cocktail:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
