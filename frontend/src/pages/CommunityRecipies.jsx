@@ -3,7 +3,6 @@ import "../styles/pages/Community-Recipes.css";
 import CocktailModal from "../components/CocktailModal";
 import CocktailCard from "../components/CocktailCard";
 
-const defaultImage = "/cocktail-default.png"; 
 
 const CommunityRecipes = () => {
   const [recipes, setRecipes] = useState([]);

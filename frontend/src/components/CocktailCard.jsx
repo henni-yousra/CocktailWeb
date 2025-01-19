@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../styles/components/CocktailCard.css";
 
+const defaultImage = "/cocktail-default.png"; 
+
 const CocktailCard = ({ cocktail, onClick }) => {
   const { favorites, addToFavorites, removeFromFavorites } = useFavorites();
   const { user } = useAuth();
@@ -26,7 +28,11 @@ const CocktailCard = ({ cocktail, onClick }) => {
 
   return (
     <div className="cocktail-card" onClick={() => onClick(cocktail)}>
+    {cocktail.image ? (
       <img src={cocktail.image} alt={cocktail.name} />
+    ) : (
+      <img src={defaultImage} alt={cocktail.name} />
+    )}
       <h3>{cocktail.name}</h3>
       <button
         title={isFavorite ? "Click to remove from favorites" : "Click to add to favorites"}

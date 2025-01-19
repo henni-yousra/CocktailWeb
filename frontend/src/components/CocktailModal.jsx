@@ -1,6 +1,8 @@
 import React from "react";
 import "../styles/components/CocktailModal.css";
 
+
+const defaultImage = "/cocktail-default.png"; 
 const CocktailModal = ({ cocktail, onClose }) => {
   if (!cocktail) return null;
 
@@ -11,7 +13,11 @@ const CocktailModal = ({ cocktail, onClose }) => {
           &times;
         </button>
         <h2>{cocktail.name}</h2>
-        <img src={cocktail.image} alt={cocktail.name} />
+        {cocktail.image ? (
+          <img src={cocktail.image} alt={cocktail.name} />
+          ) : (
+          <img src={defaultImage} alt={cocktail.name} />
+        )}
         <p><strong>Category:</strong> {cocktail.category}</p>
         <p><strong>Ingredients:</strong></p>
         <ul>
