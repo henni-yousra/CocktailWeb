@@ -28,6 +28,7 @@ const CocktailModal = ({ cocktail, onClose }) => {
           ))}
         </ul>
         <p>{cocktail.instructions}</p>
+        <p><strong>Create By:</strong>  {cocktail.creator ? cocktail.creator.username : "unknown"}</p>
       </div>
     </div>
   );
