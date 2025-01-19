@@ -363,28 +363,32 @@ export const getUserCocktails = async (req, res) => {
   }
 };
 
+
+
 export const deleteCocktail = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("Received cocktail ID:", id); // Log ID
+    console.log("Authenticated user ID:", req.user?.id); // Log user ID
 
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.error("Invalid cocktail ID");
       return res.status(400).json({ message: "Invalid cocktail ID" });
     }
 
-    console.log("User ID:", req.user.id);
-    console.log("Cocktail ID:", id);
-
     const cocktail = await Cocktail.findOne({ _id: id, creator: req.user.id });
-
     if (!cocktail) {
-      return res.status(404).json({ message: "Cocktail not found or not authorized to delete" });
+      console.error("Cocktail not found or unauthorized");
+      return res
+        .status(404)
+        .json({ message: "Cocktail not found or not authorized to delete" });
     }
 
     await cocktail.remove();
     res.status(200).json({ message: "Cocktail deleted successfully" });
   } catch (error) {
-    console.error("Error deleting cocktail:", error);
+    console.error("Error deleting cocktail:", error); // Log full error
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -3,12 +3,11 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/pages/CreateRecipe.css";
 
 const CreateRecipe = () => {
-  const { user } = useAuth(); // Vérifie si l'utilisateur est connecté
+  const { user } = useAuth();
   const [recipe, setRecipe] = useState({ name: "", ingredients: "", steps: "" });
-  const [recipes, setRecipes] = useState([]); // Liste locale des cocktails
-  const [success, setSuccess] = useState(false); // Suivi du succès de la création
+  const [recipes, setRecipes] = useState([]);
+  const [success, setSuccess] = useState(false);
 
-  // Charger les cocktails créés par l'utilisateur
   useEffect(() => {
     const fetchUserCocktails = async () => {
       const token = localStorage.getItem("authToken");
@@ -22,28 +21,28 @@ const CreateRecipe = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Envoie le token dans les headers
+            Authorization: `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch cocktails. Status: " + response.status);
+          throw new Error("Failed to fetch cocktails.");
         }
 
-        const data = await response.json(); // Récupère les cocktails
-        setRecipes(data); // Met à jour l'état local
+        const data = await response.json();
+        setRecipes(data);
       } catch (error) {
         console.error("Error fetching user's cocktails:", error);
-        alert("Failed to fetch cocktails. Please try again.");
+        alert("Failed to fetch cocktails.");
       }
     };
 
     if (user) {
-      fetchUserCocktails(); // Appelle la fonction si l'utilisateur est connecté
+      fetchUserCocktails();
     }
-  }, [user]); // Exécute l'effet lorsque l'utilisateur change
+  }, [user]);
 
-  // Gestion de la création de recette
+  // Handle recipe creation
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -57,8 +56,8 @@ const CreateRecipe = () => {
       name: recipe.name,
       ingredients: recipe.ingredients.split(",").map((item) => item.trim()),
       instructions: recipe.steps,
-      creator: user.id, // Utilise l'ID de l'utilisateur connecté
-      source: "community", // Définit la source comme "community"
+      creator: user.id,
+      source: "community",
     };
 
     try {
@@ -66,25 +65,57 @@ const CreateRecipe = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Envoie le token dans les headers
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload), // Envoie le payload JSON
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create the recipe. Status: " + response.status);
+        throw new Error("Failed to create the recipe.");
       }
 
-      const responseData = await response.json(); // Lit la réponse une fois
-      setRecipes([...recipes, responseData]); // Ajoute la nouvelle recette à la liste locale
-      setRecipe({ name: "", ingredients: "", steps: "" }); // Réinitialise le formulaire
-      setSuccess(true); // Définit le succès sur vrai
+      const responseData = await response.json();
+      setRecipes([...recipes, responseData]);
+      setRecipe({ name: "", ingredients: "", steps: "" });
+      setSuccess(true);
     } catch (error) {
       console.error("Error creating recipe:", error);
-      alert("Failed to create the recipe. Please try again.");
-      setSuccess(false); // Définit le succès sur faux en cas d'erreur
+      alert("Failed to create the recipe.");
+      setSuccess(false);
     }
   };
+
+
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("authToken");
+    console.log("Deleting cocktail with ID:", id);
+    console.log("Authorization token:", token);
+  
+    if (!token) {
+      alert("You must be logged in to delete a recipe.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:8080/api/cocktails/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to delete the recipe. Status: ${response.status}`);
+      }
+  
+      setRecipes(recipes.filter((recipe) => recipe._id !== id));
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+      alert("Failed to delete the recipe.");
+    }
+  };
+  
 
   return (
     <div className="create-recipe container">
@@ -120,15 +151,13 @@ const CreateRecipe = () => {
             <button type="submit">Save Recipe</button>
           </form>
 
-          {success && (
-            <div className="success-message">Recipe created successfully!</div>
-          )}
+          {success && <div className="success-message">Recipe created successfully!</div>}
 
           <h3>Your Created Cocktails</h3>
           <div className="recipe-list">
             {recipes.length > 0 ? (
-              recipes.map((recipe, index) => (
-                <div key={index} className="recipe-card">
+              recipes.map((recipe) => (
+                <div key={recipe._id} className="recipe-card">
                   <h4>{recipe.name}</h4>
                   <p>
                     <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
@@ -136,6 +165,7 @@ const CreateRecipe = () => {
                   <p>
                     <strong>Steps:</strong> {recipe.instructions}
                   </p>
+                  <button onClick={() => handleDelete(recipe._id)}>Delete</button>
                 </div>
               ))
             ) : (
