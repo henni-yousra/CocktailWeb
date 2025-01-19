@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 
 const CACHE_KEY = "cocktails";
 
+
 export const getCocktails = async (req, res) => {
   try {
     const apiCocktailCount = 20;
@@ -16,22 +17,12 @@ export const getCocktails = async (req, res) => {
     // Vérification du cache Redis
     const cachedCocktails = await redis.get(CACHE_KEY);
     if (cachedCocktails) {
-      console.log("Serving cocktails from cache");
+      console.log("getCocktails Serving cocktails from cache");
       return res.status(200).json(JSON.parse(cachedCocktails));
     }
 
     // Récupération des cocktails depuis la base de données, excluant ceux créés par la communauté
     const dbCocktails = await Cocktail.find({ source: { $ne: "community" } }).limit(apiCocktailCount);
-
-    // Récupération des cocktails depuis l'API
-    // const apiCocktails = await Promise.all(
-    //   Array.from({ length: apiCocktailCount }).map(() =>
-    //     fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
-    //       .then((res) => res.json())
-    //       .then((data) => data.drinks[0])
-    //       .catch(() => null) // Ignorer les erreurs API
-    //   )
-    // );
 
     const fetchUniqueCocktails = async (count) => {
       const uniqueCocktails = new Map();
@@ -84,50 +75,6 @@ export const getCocktails = async (req, res) => {
   }
 };
 
-
-
-
-/*
-// Créer un cocktail
-export const createCocktail = async (req, res) => {
-  try {
-    const { name, ingredients, instructions, creator } = req.body;
-    const image = req.file;
-
-    // Vérifications des champs obligatoires
-    if (!name || !ingredients || !instructions || !creator) {
-      return res.status(400).json({
-        message: "Name, ingredients, instructions, and creator are required",
-      });
-    }
-
-    // Création du cocktail
-    const newCocktail = new Cocktail({
-      name,
-      ingredients: ingredients.split(",").map((i) => i.trim()),
-      instructions,
-      creator,
-      image: image ? image.buffer : null, // Contenu binaire de l'image
-      imageType: image ? image.mimetype : null, // Type MIME de l'image
-    });
-
-    // Sauvegarder dans la base de données
-    await newCocktail.save();
-
-    // Invalider le cache Redis si nécessaire
-    if (redisClient) {
-      await redisClient.del(CACHE_KEY);
-    }
-
-    // Réponse avec le cocktail créé
-    res.status(201).json(newCocktail);
-  } catch (error) {
-    console.error("Error creating cocktail:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-*/
-
 export const addFavorite = async (req, res) => {
 
   const cocktailId = (req.body.cocktailId); // Récupérer l'identifiant du cocktail depuis les paramètres
@@ -152,13 +99,7 @@ export const addFavorite = async (req, res) => {
 
 
 export const removeFavorite = async (req, res) => {
-  /* l'erreur était dans l'extraction de l'identifiant du cocktail
 
-  //const { cocktailId } = parseInt(req.body.cocktailId);
-    
-  Cela pose problème car : parseInt est appliqué directement sur un objet destructuré, ce qui ne fonctionne pas.
-    L'ID semble être passé dans l'URL (/favorites/:id) et non dans le corps de la requête.
-    */
   const cocktailId = parseInt(req.params.id); // Récupère l'ID depuis les paramètres de l'URL
 
   try {
@@ -253,32 +194,6 @@ export const getFavorites = async (req, res) => {
 };
 
 
-// Obtenir les favoris (avec cache)
-// export const getFavorites = async (req, res) => {
-//   try {
-//     const cacheKey = `favorites:${req.user.id}`;
-
-//     // Vérifier si les favoris sont en cache
-//     const cachedFavorites = await redis.get(cacheKey);
-
-//     if (cachedFavorites) {
-//       console.log("Serving favorites from cache");
-//       return res.status(200).json(JSON.parse(cachedFavorites));
-//     }
-
-//     // Si non en cache, interroger la base de données
-//     const user = await User.findById(req.user.id).populate("favorites");
-//     console.log("Serving favorites from database");
-
-//     // Mettre en cache les favoris
-//     await redis.set(cacheKey, JSON.stringify(user.favorites), "EX", 3600); // Expire après 1 heure
-
-//     res.status(200).json(user.favorites);
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
-
 export const getSearchCocktails = async (req, res) => {
   const { query } = req.query;
 
@@ -286,6 +201,12 @@ export const getSearchCocktails = async (req, res) => {
     return res.status(400).json({ message: "Query parameter is required" });
   }
 
+  //get cached data
+  const cachedData = await redis.get(query);
+  if (cachedData) {
+    console.log("GetSearch Serving cocktails from cache");
+    return res.status(200).json(JSON.parse(cachedData));
+  }
   try {
     // URL pour rechercher par nom
     const apiUrl = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`;
@@ -314,6 +235,8 @@ export const getSearchCocktails = async (req, res) => {
         }))
       : [];
 
+    // Mettre en cache les résultats
+    await redis.set(query, JSON.stringify(results), "EX", 3600); // Expiration : 1 heure
     res.status(200).json(results);
   } catch (error) {
     console.error("Error searching cocktails:", error);
@@ -323,6 +246,12 @@ export const getSearchCocktails = async (req, res) => {
 
 // Obtenir les cocktails de la communauté
 export const getCommunityRecipes = async (req, res) => {
+  //get cached data
+  const cachedData = await redis.get("community");
+  if (cachedData) {
+    console.log("Serving community cocktails from cache");
+    return res.status(200).json(JSON.parse(cachedData));
+  }
   try {
     const apiCocktailCount = 20;
 
@@ -336,6 +265,8 @@ export const getCommunityRecipes = async (req, res) => {
     } else {
       console.log('Community cocktails fetched:', dbCocktails);
     }
+    // Cache the fetched data
+    await redis.set("community", JSON.stringify(dbCocktails), "EX", 3600);  // Expiration: 1 hour
     res.json(dbCocktails);  // Return the fetched data as JSON
   } catch (err) {
     console.error('Error fetching community cocktails:', err);
@@ -367,6 +298,8 @@ export const createCocktail = async (req, res) => {
     });
 
     await newCocktail.save();
+    // Invalidate cache for community cocktails
+    await redis.del("community");
     return res.status(201).json(newCocktail);
   } catch (error) {
     console.error(error);
@@ -388,9 +321,6 @@ export const getUserCocktails = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
-
 
 export const deleteCocktail = async (req, res) => {
   try {
@@ -416,7 +346,7 @@ export const deleteCocktail = async (req, res) => {
 
     // Invalidate cache for cocktails
     await redis.del("cocktails");
-
+    await redis.del("community");
     res.status(200).json({ message: "Cocktail deleted successfully" });
   } catch (error) {
     console.error("Error deleting cocktail:", error);
