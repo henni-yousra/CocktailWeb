@@ -18,7 +18,7 @@
   font-size: 16px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre subtile */
-  font-family: 'Poppins', sans-serif;
+  font-family: "lobster", cursive;
 }
 
 /* Effet focus sur le champ de saisie */
@@ -39,7 +39,7 @@
   border-radius: 30px; /* Coins arrondis pour uniformité avec l'input */
   transition: background-color 0.3s ease, transform 0.3s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée */
-  font-family: 'Poppins', sans-serif; /* Police appliquée */
+  font-family: "lobster", cursive; /* Police plus fantaisiste */
 }
 
 /* Hover et état actif du bouton principal */
@@ -63,7 +63,7 @@
   border-radius: 30px;
   transition: background-color 0.3s ease, transform 0.3s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Cohérence des ombres */
-  font-family: 'Poppins', sans-serif;
+  font-family: 'lobster', cursive;
 }
 
 /* Hover et état actif du bouton de réinitialisation */
