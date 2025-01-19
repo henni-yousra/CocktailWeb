@@ -21,11 +21,39 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Style pour le conteneur du lien */
+.logo-link {
+  display: inline-block;
+  text-decoration: none; /* Supprime le soulignement */
+}
+
+/* Image du logo */
+.logo-image {
+  width: 80px; /* Taille ajustée pour ne pas élargir la navbar */
+  height: auto; /* Maintient le ratio d'aspect */
+  transition: transform 0.3s ease; /* Ajoute une transition pour les interactions */
+  vertical-align: middle; /* Aligne l'image au centre verticalement */
+}
+
+/* Effet au survol */
+.logo-link:hover .logo-image {
+  transform: scale(1.1); /* Zoom léger au survol */
+}
+
+/* Focus pour accessibilité */
+.logo-link:focus {
+  outline: 2px solid #ff6f61; /* Indique visuellement le focus pour les utilisateurs au clavier */
+  border-radius: 5px; /* Coins arrondis pour un meilleur rendu */
+}
+
+/* Optionnel : Ajustement pour la navbar */
 .navbar h1 {
   margin: 0;
-  font-size: 24px;
-  font-family: Lobster, cursive;
+  padding: 0;
+  display: flex;
+  align-items: center; /* Centre l'image dans la navbar */
 }
+
 
 .navbar-links {
   list-style: none;
@@ -69,4 +97,41 @@ button {
 
 button:hover {
   background-color: #e6c200;
+}
+
+.auth-button {
+  padding: 10px 20px; /* Taille confortable pour cliquer */
+  font-size: 16px; /* Taille de texte bien lisible */
+  font-weight: bold; /* Texte en gras pour le mettre en évidence */
+  background-color: #ffd700; /* Couleur vive pour attirer l’attention */
+  color: white; /* Texte en contraste */
+  border: none; /* Suppression des bordures par défaut */
+  border-radius: 8px; /* Coins arrondis pour un look moderne */
+  cursor: pointer; /* Indicateur interactif pour l'utilisateur */
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+  font-family: 'Poppins', sans-serif; /* Police moderne pour cohérence */
+}
+
+/* Effet au survol */
+.auth-button:hover {
+  background-color: #e6c200; /* Couleur légèrement plus foncée */
+  transform: translateY(-3px); /* Légère animation vers le haut */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ombre plus accentuée */
+}
+
+/* Effet actif */
+.auth-button:active {
+  transform: translateY(1px); /* Réduction subtile pour indiquer un clic */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Réduction de l'ombre au clic */
+}
+
+/* Variante pour état "connecté" */
+.auth-button.logged-in {
+  background-color: #ff6f61; /* Couleur rouge pour différencier les états */
+  color: white; /* Conserver le contraste */
+}
+
+.auth-button.logged-in:hover {
+  background-color: #e55d52; /* Variante plus foncée au survol */
 }

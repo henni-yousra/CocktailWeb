@@ -1,50 +1,61 @@
+/* Carte de cocktail */
 .cocktail-card {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px; /* Coins plus arrondis pour un look moderne */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Lobster', cursive; /* Police décorative */
 }
 
+/* Animation au survol */
 .cocktail-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px); /* Déplacement légèrement accentué */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* Image de la carte */
 .cocktail-card img {
   width: 100%;
-  height: 150px;
+  height: 180px; /* Hauteur légèrement augmentée pour plus de visibilité */
   object-fit: cover;
+  border-bottom: 2px solid #f0f0f0; /* Ligne de séparation subtile */
 }
 
+/* Titre du cocktail */
 .cocktail-card h3 {
-  font-size: 18px;
-  margin: 10px;
+  font-size: 20px; /* Taille augmentée pour mieux mettre en valeur le titre */
+  margin: 12px;
   text-align: center;
+  color: #333; /* Couleur plus sombre pour le contraste */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1); /* Ombre subtile pour lisibilité */
 }
 
-/* Favorite button */
+/* Bouton Favoris */
 .favorite-button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 10px auto;
-  padding: 8px 15px;
-  font-size: 14px;
+  margin: 15px auto;
+  padding: 10px 20px; /* Plus d’espace pour un bouton plus premium */
+  font-size: 16px; /* Taille légèrement augmentée */
   font-weight: bold;
   color: #555;
-  background-color: #f0f0f0;
+  background-color: #f9f9f9; /* Couleur plus claire pour le contraste */
   border: none;
-  border-radius: 20px;
+  border-radius: 24px; /* Forme plus arrondie */
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-family: 'Lobster', cursive; /* Police appliquée au bouton */
 }
 
+/* Hover et état favorisé */
 .favorite-button:hover {
   background-color: #ff6f61;
   color: white;
+  transform: scale(1.05); /* Légère mise en valeur */
 }
 
 .favorite-button.favorited {
@@ -56,12 +67,28 @@
   background-color: #e55d52;
 }
 
-/* Icon styling */
+/* Icône dans le bouton */
 .favorite-button .icon {
   font-size: 18px;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .favorite-button:hover .icon {
-  transform: scale(1.2);
+  transform: scale(1.3); /* Animation plus visible sur l’icône */
+}
+
+/* Petite optimisation pour les écrans mobiles */
+@media (max-width: 768px) {
+  .cocktail-card {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Ombres réduites */
+  }
+
+  .cocktail-card img {
+    height: 150px; /* Ajustement de la hauteur de l’image */
+  }
+
+  .favorite-button {
+    padding: 8px 16px; /* Taille réduite pour les petits écrans */
+    font-size: 14px;
+  }
 }

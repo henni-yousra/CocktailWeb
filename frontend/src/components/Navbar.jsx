@@ -8,11 +8,12 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <h1>Cocktail Explorer</h1>
+      <h1>
+        <a href="/" class="logo-link">
+          <img src="../../public/cocktail-default.png" alt="Cocktail Explorer Logo" class="logo-image" />
+        </a>
+      </h1>
       <ul className="navbar-links">
-        <li>
-          <Link to="/">Home</Link>
-        </li>
         {user && (
           <>
             <li>

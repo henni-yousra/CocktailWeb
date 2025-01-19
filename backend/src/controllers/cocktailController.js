@@ -175,10 +175,10 @@ export const getFavorites = async (req, res) => {
     }
 
     // Vérifier le cache Redis pour les favoris
-    // const cachedFavorites = await redis.get(`favorites:${req.user.id}`);
-    // if (cachedFavorites) {
-    //   return res.status(200).json(JSON.parse(cachedFavorites));
-    // }
+    const cachedFavorites = await redis.get(`favorites:${req.user.id}`);
+    if (cachedFavorites) {
+      return res.status(200).json(JSON.parse(cachedFavorites));
+    }
 
     // Récupérer les détails des cocktails
     const favoriteCocktails = await Promise.all(

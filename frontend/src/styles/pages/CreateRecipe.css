@@ -1,63 +1,98 @@
+/* Section principale pour créer une recette */
 .create-recipe {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 20px; /* Ajout de padding pour espacement */
+  font-family: 'Lobster', cursive; /* Police stylée */
 }
 
+/* Titre de la section */
 .create-recipe h2 {
-  font-size: 32px;
+  font-size: 28px; /* Taille légèrement réduite pour une meilleure proportion */
   margin-bottom: 20px;
-  color: #ff6f61;
+  color: #ff6f61; /* Couleur vive et attrayante */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+  text-align: center;
 }
 
+/* Formulaire de création */
 .create-recipe form {
   width: 100%;
   max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px; /* Espacement plus uniforme */
 }
 
+/* Champs du formulaire */
 .create-recipe input,
 .create-recipe textarea {
-  padding: 10px;
+  padding: 12px; /* Espacement accru pour un confort visuel */
   font-size: 16px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 8px; /* Coins légèrement arrondis pour un look moderne */
   width: 100%;
+  font-family: 'Lobster', cursive; /* Police appliquée ici aussi */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Ajout d'une ombre légère */
+  transition: border-color 0.3s ease;
 }
 
+/* Focus sur les champs */
+.create-recipe input:focus,
+.create-recipe textarea:focus {
+  border-color: #ff6f61; /* Couleur vive pour indiquer le focus */
+  outline: none; /* Supprimer l'effet par défaut */
+}
+
+/* Bouton d'envoi */
 .create-recipe button {
-  padding: 10px 15px;
-  font-size: 16px;
+  padding: 12px 15px;
+  font-size: 18px; /* Taille de texte légèrement augmentée */
   background-color: #ff6f61;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px; /* Coins plus arrondis pour un bouton élégant */
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-family: 'Lobster', cursive; /* Police appliquée au bouton */
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+/* Bouton au survol */
 .create-recipe button:hover {
-  background-color: #e55d52;
+  background-color: #e55d52; /* Couleur légèrement plus foncée */
+  transform: translateY(-2px); /* Animation de déplacement subtil */
 }
 
+/* Liste des recettes */
 .recipes-list {
   margin-top: 30px;
   text-align: left;
+  width: 100%; /* S'assurer qu'elle occupe tout l'espace disponible */
+  max-width: 600px; /* Limite pour ne pas être trop large */
+  font-family: 'Lobster', cursive; /* Police Lobster appliquée */
 }
 
+/* Liste non ordonnée */
 .recipes-list ul {
-  list-style: none;
+  list-style: none; /* Supprimer les puces par défaut */
   padding: 0;
 }
 
+/* Éléments individuels de la liste */
 .recipes-list li {
-  background-color: #f9f9f9;
-  padding: 10px;
+  background-color: #f9f9f9; /* Couleur de fond douce */
+  padding: 15px; /* Espacement plus généreux */
   margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px; /* Coins arrondis pour chaque item */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Animation au survol des items */
+.recipes-list li:hover {
+  transform: translateY(-2px); /* Déplacement léger vers le haut */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ombre plus accentuée */
 }

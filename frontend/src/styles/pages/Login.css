@@ -1,55 +1,90 @@
 .auth-container {
   width: 100%;
   max-width: 400px;
-  margin: auto;
-  padding: 20px;
+  margin: 40px auto;
+  padding: 25px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  background: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; /* Coins légèrement arrondis */
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombre plus douce et profonde */
   text-align: center;
+  font-family: 'Poppins', sans-serif; /* Police moderne */
 }
 
+/* Titre principal */
 .auth-container h2 {
   margin-bottom: 20px;
-  font-size: 24px;
+  font-size: 26px; /* Taille légèrement augmentée */
+  color: #333; /* Couleur plus foncée pour le contraste */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Ombre subtile pour le titre */
 }
 
+/* Formulaire */
 .auth-container form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 15px; /* Espacement plus compact entre les champs */
 }
 
+/* Champs de saisie */
 .auth-container input {
-  padding: 10px;
-  font-size: 16px;
+  padding: 10px; /* Taille ajustée pour un look équilibré */
+  font-size: 14px; /* Texte légèrement réduit */
   border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 100%;
+  border-radius: 8px; /* Coins plus arrondis */
+  width: 100%; /* Occupe tout l'espace disponible du conteneur */
+  max-width: 300px; /* Limite la largeur maximale */
+  margin: 0 auto; /* Centrer les champs */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Ajout d'une ombre subtile */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Focus sur les champs */
+.auth-container input:focus {
+  border-color: #ff6f61; /* Couleur vive pour indiquer le focus */
+  box-shadow: 0 0 8px rgba(255, 111, 97, 0.5);
+  outline: none; /* Supprime le contour par défaut */
+}
+
+/* Bouton d'action */
 .auth-container button {
-  padding: 10px 15px;
-  font-size: 16px;
+  padding: 12px 20px; /* Taille plus généreuse */
+  font-size: 14px; /* Taille cohérente avec les champs */
+  font-weight: bold;
   background-color: #ff6f61;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px; /* Coins plus arrondis */
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+  max-width: 300px; /* Bouton centré et aligné avec les champs */
+  margin: 0 auto;
 }
 
+/* Hover sur le bouton */
 .auth-container button:hover {
-  background-color: #e55d52;
+  background-color: #e55d52; /* Couleur légèrement plus foncée */
+  transform: translateY(-2px); /* Légère animation vers le haut */
 }
 
+/* Bouton actif */
+.auth-container button:active {
+  transform: translateY(1px); /* Indique un clic */
+}
+
+/* Message d'erreur */
 .auth-container .error {
-  color: red;
+  color: #ff4d4f; /* Couleur rouge vif pour l'erreur */
   font-size: 14px;
+  font-weight: 500;
+  margin-top: -10px; /* Espacement réduit */
 }
 
+/* Message d'information */
 .auth-container .info {
-  color: green;
+  color: #4caf50; /* Couleur verte pour les informations */
   font-size: 14px;
+  font-weight: 500;
+  margin-top: -10px;
 }
