@@ -24,14 +24,37 @@ export const getCocktails = async (req, res) => {
     const dbCocktails = await Cocktail.find({ source: { $ne: "community" } }).limit(apiCocktailCount);
 
     // Récupération des cocktails depuis l'API
-    const apiCocktails = await Promise.all(
-      Array.from({ length: apiCocktailCount }).map(() =>
-        fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
-          .then((res) => res.json())
-          .then((data) => data.drinks[0])
-          .catch(() => null) // Ignorer les erreurs API
-      )
-    );
+    // const apiCocktails = await Promise.all(
+    //   Array.from({ length: apiCocktailCount }).map(() =>
+    //     fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
+    //       .then((res) => res.json())
+    //       .then((data) => data.drinks[0])
+    //       .catch(() => null) // Ignorer les erreurs API
+    //   )
+    // );
+
+    const fetchUniqueCocktails = async (count) => {
+      const uniqueCocktails = new Map();
+    
+      while (uniqueCocktails.size < count) {
+        try {
+          const res = await fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php");
+          const data = await res.json();
+          const cocktail = data.drinks[0];
+    
+          if (cocktail && !uniqueCocktails.has(cocktail.strDrink)) {
+            uniqueCocktails.set(cocktail.strDrink, cocktail);
+          }
+        } catch (error) {
+          console.error("Error fetching a cocktail:", error);
+        }
+      }
+    
+      return Array.from(uniqueCocktails.values());
+    };
+    
+    const apiCocktails = await fetchUniqueCocktails(apiCocktailCount);
+    
 
     const validApiCocktails = apiCocktails.filter(Boolean);
     const combinedCocktails = [...dbCocktails, ...validApiCocktails].map((cocktail) => ({

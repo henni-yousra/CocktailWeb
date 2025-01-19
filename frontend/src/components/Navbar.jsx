@@ -9,8 +9,8 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <h1>
-        <a href="/" class="logo-link">
-          <img src="../../public/cocktail-default-removebg-preview.png" alt="Cocktail Explorer Logo" class="logo-image" />
+        <a href="/" className="logo-link">
+          <img src="../../public/cocktail-default-removebg-preview.png" alt="Cocktail Explorer Logo" className="logo-image" />
         </a>
       </h1>
       <ul className="navbar-links">
@@ -31,7 +31,6 @@ const Navbar = () => {
       <div className="auth-actions">
         {user ? (
           <>
-            {/* <span className="username"></span> */}
             <button onClick={logout} className="auth-button">
               Logout
             </button>
