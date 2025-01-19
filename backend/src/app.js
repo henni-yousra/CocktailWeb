@@ -5,6 +5,9 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import cocktailRoutes from "./routes/cocktailRoutes.js";
+import swaggerUi from "swagger-ui-express"; // Import Swagger UI
+import swaggerSpec from "../swagger-config.js"; // Import the Swagger specification
+
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -17,6 +20,10 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve Swagger documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 // Routes
 app.use("/auth", authRoutes);
