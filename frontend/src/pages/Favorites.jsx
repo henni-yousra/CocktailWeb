@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import { useFavorites } from "../context/FavoritesContext";
 import CocktailCard from "../components/CocktailCard";
 import "../styles/pages/Favorites.css";
+import CocktailModal from "../components/CocktailModal";
 
 const Favorites = () => {
   const { favorites } = useFavorites();
+  const [selectedCocktail, setSelectedCocktail] = useState(null);
 
   return (
     <div className="favorites container">
@@ -15,13 +17,17 @@ const Favorites = () => {
             <CocktailCard
               key={cocktail.id}
               cocktail={cocktail}
-              onClick={() => {}}
+              onClick={setSelectedCocktail}
             />
           ))}
         </div>
       ) : (
         <p className="no-favorites">You have no favorite cocktails yet. Start adding some!</p>
       )}
+      <CocktailModal
+        cocktail={selectedCocktail}
+        onClose={() => setSelectedCocktail(null)}
+      />
     </div>
   );
 };

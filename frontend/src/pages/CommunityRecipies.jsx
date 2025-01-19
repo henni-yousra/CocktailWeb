@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "../styles/pages/Community-Recipes.css";
+import CocktailModal from "../components/CocktailModal";
+import CocktailCard from "../components/CocktailCard";
 
 const defaultImage = "/cocktail-default.png"; 
 
 const CommunityRecipes = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCocktail, setSelectedCocktail] = useState(null);
 
   useEffect(() => {
     const fetchCommunityRecipes = async () => {
@@ -30,33 +33,20 @@ const CommunityRecipes = () => {
       ) : recipes.length > 0 ? (
         <div className="recipe-grid">
           {recipes.map((recipe) => (
-            <div key={recipe._id} className="card">
-              <img
-                src={defaultImage} // Display the default image
-                alt={recipe.name}
-              />
-              <div className="titles">
-                <h3 className="title">{recipe.name}</h3>
-
-              </div>
-              <div className="instructions">
-                <p>
-                  <strong>Ingredients:</strong> {recipe.ingredients.join(", ")}
-                </p>
-                <p>
-                  <strong>Instructions:</strong> {recipe.instructions}
-                </p>
-                <br />
-                <p>
-                  <strong>Created By:</strong> {recipe.creator ? recipe.creator.username : "unknown"}
-                </p>
-              </div>
-            </div>
+            <CocktailCard
+              key={recipe.id}
+              cocktail={recipe}
+              onClick={setSelectedCocktail}
+            />
           ))}
         </div>
       ) : (
         <p>No community recipes available.</p>
       )}
+      <CocktailModal
+        cocktail={selectedCocktail}
+        onClose={() => setSelectedCocktail(null)}
+      />
     </div>
   );
 };
