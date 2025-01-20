@@ -31,5 +31,12 @@ Accédez à l'application [ App ](http://localhost:8080/)
    ```bash
 docker exec -it mongodb mongosh
 use cocktaildb
-db.users.find({}, { email:1 , password:1 });
+db.users.find({}, {});
    ```
+
+# Documentation des routes via Swagger
+
+Accédez àSwagger UI [ Doc ](http://localhost:5000/api-docs/#/)
+
+(running on the backend)
+http://localhost:5000/api-docs/#/
